@@ -72,6 +72,8 @@
             }
           },
 
+          _activeStepId: Number,
+
           /**
            * This property is toggled when the reset function is called.
            * When we are currently resetting the value, the property is true, false otherwise.
@@ -159,21 +161,37 @@
        * Then it will open the next step if there is one.
        */
       openNextStep() {
-        if (this.activeStep.validate()) {
-          this.activeStep.saveStep();
-
-          //set the value to and from the the transition effect.
-          this.__fromStep = this.activeStep;
-          this.__toStep = this.nextStep;
+        let currStep = this._steps[this.activeStepId];
+        if (currStep.valid) {
+          currStep.saveStep();
 
           //toggle the step
-          this.activeStep.toggleStep();
-          this.removeActiveStep();
-          if (this.nextStep !== null)
-            this.nextStep.toggleStep();
+          let nextStep = this._calcNextStep();
+          currStep.active = false;
+          this.activeStepId = this._steps.indexOf(nextStep);
+          nextStep.active = true;
         } else {
-          this.activeStep.fireInvalidStep();
+          currStep.fireInvalidStep();
         }
+      }
+
+      _calcNextStep() {
+        let stepIndex = this.activeStepId + 1;
+        let nextStep;
+        while (stepIndex != this.activeStepId) {
+          let checkStep = this._steps[stepIndex];
+          if (checkStep.locked || (checkStep.save && !checkStep.editable)) {
+            if (stepIndex == this._steps.length-1) {
+              stepIndex = 0;
+            } else {
+              stepIndex++;
+            }
+          } else {
+            nextStep = checkStep;
+            stepIndex = this.activeStepId;
+          }
+        }
+        return nextStep;
       }
 
       /**
@@ -289,16 +307,11 @@
         let newStep = this.getStepById(id);
 
         // If the new step is already active why bother
-        if (this.activeStep == newStep && newStep.isActive())
+        if (this.activeStep == newStep && newStep.active)
           return;
-        // Catch backtracking
-        if (newStep.save && !newStep.editable) {
-          console.warn("ID: "+id+" is not marked as editable"); 
-          return;
-         }
-         // Catch locked steps
-         if (newStep.locked) {
-          console.warn("ID: "+id+" is locked"); 
+        // Catch locked or backtracking
+        if ((newStep.save && !newStep.editable) || newStep.locked) {
+          console.warn("ID: "+id+" is locked or is not marked as editable"); 
           return;
          }
         // Close all open panes
@@ -310,6 +323,7 @@
         }
         // Set new step as active
         this.activeStep = newStep;
+        this.activeStepId = id;
         newStep.active = true;
       }
 

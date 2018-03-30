@@ -11,7 +11,6 @@
   <template>
     <style>
       /* General */
-
       :host {
         height: inherit;
       }
@@ -79,7 +78,6 @@
       }
 
       /* label button */
-
       :host([save]) div#labelBtn {
         color: var(--step-saved-label-color, #424242);
         font-weight: inherit;
@@ -285,6 +283,11 @@
             type: Boolean,
             observer: '_getIcon'
           },
+
+          valid: {
+            type: Boolean,
+            value: true
+          }
 
           /**
            * This stores a string containing
