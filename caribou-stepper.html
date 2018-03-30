@@ -1,13 +1,17 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="caribou-stepper-stepper-property-mixin.html">
+<link rel="import" href="caribou-step.html">
 
 <dom-module id="caribou-stepper">
     <template>
         <style>
             :host {
                 display: block;
-                --primary-color: #2196F3;
                 position: relative;
+            }
+
+            :host[hidden] {
+                display: none;
             }
 
             :host([horizontal]) {
