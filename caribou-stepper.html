@@ -287,9 +287,20 @@
          }
 
         let newStep = this.getStepById(id);
+
         // If the new step is already active why bother
-        if (this.activeStep == newStep && newStep.active)
-            return;
+        if (this.activeStep == newStep && newStep.isActive())
+          return;
+        // Catch backtracking
+        if (newStep.save && !newStep.editable) {
+          console.warn("ID: "+id+" is not marked as editable"); 
+          return;
+         }
+         // Catch locked steps
+         if (newStep.locked) {
+          console.warn("ID: "+id+" is locked"); 
+          return;
+         }
         // Close all open panes
         for(let step of this._steps) {
           if (step == newStep)
