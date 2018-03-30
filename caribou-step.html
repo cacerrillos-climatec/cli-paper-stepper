@@ -373,7 +373,7 @@
        * @private
        */
       _toggle() {
-        if (!this.parentElement.finish && (!this.parentElement.linear && (!this.save || this.editable)) ||
+        if (!this.parentElement.finish && !this.locked && (!this.parentElement.linear && (!this.save || this.editable)) ||
           (this.parentElement.linear &&
             this.editable)) {
           this.parentElement.__closeAllStep(this);
