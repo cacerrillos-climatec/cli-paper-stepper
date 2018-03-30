@@ -76,7 +76,7 @@
           */
           linear: {
             type: Boolean,
-            value: false
+            value: true
           },
 
           /**
@@ -122,6 +122,9 @@
        */
       _registerStep(element) {
         this.push('_steps', element);
+        element.stepIndex = this._steps.length - 1;
+        if(element.stepIndex == 0 && this.openFirstStepOnStartup)
+          element.active = true
         // element.addEventListener("last-step-closed", this._validStepper.bind(this));
         element.addEventListener("continue-clicked", this.__nextStep.bind(this));
         element.addEventListener("finish-clicked", this.__finishStep.bind(this));

@@ -397,7 +397,9 @@
           backButton: {
             type: Boolean,
             value: false
-          }
+          },
+
+          stepIndex: Number
         };
       }
 
@@ -428,14 +430,8 @@
       ready() {
         super.ready();
 
-        var openFirst = this._getOpenFirstStepOnStartup();
-
-        //we open the first step according the value set on the stepper element.
-        if (this._badgeNumber === 1)
-          this.active = openFirst;
-
         //register the element
-        this._register();
+        this.parentElement._registerStep(this);
       }
 
       /**
@@ -457,7 +453,7 @@
         if (this.active)
           return
 
-        this.parentElement.__closeAll();
+        this.parentElement.closeAll();
         this.toggleStep();
         if (this.save && this.editable)
           this.$.stepButtons.setUpdate(true);
@@ -527,34 +523,6 @@
              */
       saveStep() {
         this.setAttribute("save", true);
-      }
-
-      /**
-       * Getter used to know if the step is active or not.
-       * @return {Boolean} True if it is, false otherwise.
-       */
-      isActive() {
-        return this.active;
-      }
-
-      /**
-       * This function is used to register an element to the parent.
-       * @private
-       */
-      _register() {
-        this.parentElement._registerStep(this);
-      }
-
-      validate() {
-        return true;
-      }
-
-      /**
-       * This function is used to know if the property 'openFirstStepOnStartup' is set to true.
-       * @private
-       */
-      _getOpenFirstStepOnStartup() {
-        return this.parentElement.openFirstStepOnStartup;
       }
 
       changeActiveStep(active) {
