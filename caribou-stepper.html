@@ -282,7 +282,7 @@
        setActiveById(id) {
          // Catch out of range IDs
          if (id >= this._steps.length || id < 0) {
-          console.alert("ID: "+id+" is out of range"); 
+          console.warn("ID: "+id+" is out of range"); 
           return;
          }
 
