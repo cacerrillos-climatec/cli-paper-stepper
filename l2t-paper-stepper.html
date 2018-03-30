@@ -28,7 +28,7 @@
      *     
      * Example:
      * ```html
-     * <l2t-paper-stepper linear>
+     * <l2t-paper-stepper opened>
      *     <l2t-paper-step>...</l2t-paper-step>
      *     <l2t-paper-step>...</l2t-paper-step>
      *     <l2t-paper-step>...</l2t-paper-step>
@@ -139,7 +139,8 @@
        * @private
        */
       __finishStep(e) {
-        if (this.activeStep.valid) {
+        let currStep = this._steps[this.activeStepIndex];
+        if (currStep.valid) {
           this.nextStep();
           this._setFinish(true);
           this.dispatchEvent(new CustomEvent('stepper-finished', {
@@ -147,7 +148,7 @@
             composed: true
           }));
         } else {
-          this.activeStep.fireInvalidStep();
+          currStep.fireInvalidStep();
         }
       }
 
@@ -189,6 +190,9 @@
             stepIndex = this.activeStepIndex;
           }
         }
+        if(!nextStep)
+          this.finish = true
+          
         return nextStep;
       }
 
@@ -198,7 +202,7 @@
        * Then it will open the next step if there is one.
        */
       openPreviousStep() {
-        this.activeStep.toggleStep();
+        this._steps[this.activeStepIndex].toggleStep();
         if (this.previousStep !== null)
           this.previousStep.toggleStep();
       }
@@ -209,10 +213,10 @@
        * TODO : allow the 
        */
       skipStep() {
-        if ((this.linear && this.activeStep.optional) || !this.linear) {
+        if ((this.linear && this._steps[this.activeStepIndex].optional) || !this.linear) {
           if (this.linear)
-            this.activeStep.save = true;
-          this.activeStep.toggleStep();
+          this._steps[this.activeStepIndex].save = true;
+          this._steps[this.activeStepIndex].toggleStep();
           if (this.nextStep !== null)
             this.nextStep.toggleStep();
         } else
@@ -261,7 +265,7 @@
         let newStep = this._steps[i];
 
         // If the new step is already active why bother
-        if (this.activeStep == newStep && newStep.active)
+        if (this.activeStepIndex == i && newStep.active)
           return;
         // Catch locked or backtracking
         if ((newStep.save && !newStep.editable) || newStep.locked) {
@@ -276,7 +280,6 @@
           step.active = false;
         }
         // Set new step as active
-        this.activeStep = newStep;
         this.activeStepIndex = i;
         newStep.active = true;
       }
