@@ -175,10 +175,6 @@
   </template>
 
   <script>
-    window.Caribouflex = window.Caribouflex || {};
-    Caribouflex.Stepper = Caribouflex.Stepper || {};
-    Caribouflex.Stepper.Context = Caribouflex.Stepper.Context || {};
-
     /**
      * `<l2t-paper-step>` is an element that need to be surrounded by a `<l2t-paper-stepper>` element.
      * 
@@ -401,8 +397,6 @@
        */
       ready() {
         super.ready();
-
-        //register the element
         this.parentElement._registerStep(this);
       }
 
