@@ -433,47 +433,9 @@
         //we open the first step according the value set on the stepper element.
         if (this._badgeNumber === 1)
           this.active = openFirst;
-        else if (this._badgeNumber === 2 && openFirst)
-          this.parentElement.setNextStep(this);
 
         //register the element
         this._register();
-      }
-
-      /**
-       * Used in the horizontal mode to set the float property.
-       * This is used to give the effect of the transition coming from left or right.
-       * 
-       * @param {Boolean} active is the active step or not.
-       * @private
-       */
-      _setFloatForTransition(active) {
-
-        var toStep = this.parentElement.__toStep;
-        var fromStep = this.parentElement.__fromStep;
-        var activeStep = this.parentElement.activeStep;
-
-        if (toStep !== undefined && toStep !== null) {
-
-          if (toStep._badgeNumber < this._badgeNumber)
-            this.$.stepContent.style.float = "right";
-          else if (toStep._badgeNumber > this._badgeNumber)
-            this.$.stepContent.style.float = "";
-          else if (activeStep === undefined)
-            this.$.stepContent.style.float = "";
-          else if (toStep._badgeNumber === this._badgeNumber && fromStep !== undefined && toStep._badgeNumber < fromStep._badgeNumber)
-            this.$.stepContent.style.float = "";
-          else if (toStep._badgeNumber === this._badgeNumber && fromStep !== undefined && toStep._badgeNumber > fromStep._badgeNumber)
-            this.$.stepContent.style.float = "right";
-          else if (toStep._badgeNumber === this._badgeNumber && activeStep === null)
-            this.$.stepContent.style.float = "right";
-          else if (toStep._badgeNumber === this._badgeNumber && activeStep._badgeNumber < this._badgeNumber)
-            this.$.stepContent.style.float = "right";
-          else if (toStep._badgeNumber === this._badgeNumber && activeStep._badgeNumber > this._badgeNumber)
-            this.$.stepContent.style.float = "";
-          else if (toStep._badgeNumber === this._badgeNumber && !active)
-            this.$.stepContent.style.float = "";
-        }
       }
 
       /**
@@ -595,8 +557,7 @@
 
       changeActiveStep(active) {
         if (active)
-          this.parentElement.setActiveStep(this);
-        this.parentElement.activeStepId = this._badgeNumber - 1;
+          this.parentElement.activeStepId = this._badgeNumber - 1;
       }
 
       fireInvalidStep() {
