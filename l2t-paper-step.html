@@ -437,8 +437,6 @@
        */
       toggleStep(isLast) {
 
-        this._setFloatForTransition(!this.active);
-
         if (isLast !== undefined && isLast)
           this.$.stepButtons.setFinish(true);
 
