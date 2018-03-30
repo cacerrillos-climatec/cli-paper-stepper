@@ -263,12 +263,12 @@
       }
 
       _calcNextStep() {
-        let stepIndex = this._steps.length % (this.activeStepId + 1);
+        let stepIndex = (this.activeStepId + 1) % this._steps.length;
         let nextStep;
         while (stepIndex != this.activeStepId) {
           let checkStep = this._steps[stepIndex];
           if (checkStep.locked || (checkStep.save && !checkStep.editable)) {
-            stepIndex = this._steps.length % (stepIndex + 1);
+            stepIndex = (stepIndex + 1) % this._steps.length;
           } else {
             nextStep = checkStep;
             stepIndex = this.activeStepId;
