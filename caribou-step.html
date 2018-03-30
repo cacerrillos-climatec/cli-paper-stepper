@@ -125,7 +125,8 @@
 
       /* Badge */
 
-      :host([save]) span.badgeNumber, :host([locked]) span.badgeNumber {
+      :host([save]) span.badgeNumber,
+      :host([locked]) span.badgeNumber {
         display: none;
       }
 
@@ -160,7 +161,7 @@
     </style>
 
     <paper-button on-tap="_toggle">
-      <iron-icon id="iconBtn" icon="caribou-stepper-custom-icons:[[_getIcon(editable, locked)]]"></iron-icon>
+      <iron-icon id="iconBtn" icon="[[_icon]]"></iron-icon>
       <span class="badgeNumber">{{_badgeNumber}}</span>
       <div id="labelBtn">{{label}}
         <span id="subtitle">Optional</span>
@@ -266,18 +267,33 @@
             type: Number,
             readOnly: true
           },
-          
+
           /**
            * This stores a boolean value
            * indicating if the step is locked.
            */
-          locked: Boolean,
+          locked: {
+            type: Boolean,
+            observer: '_getIcon'
+          },
 
           /**
            * This stores a boolean value
            * indicating if the step is editable.
            */
-           editable: Boolean,
+           editable: {
+            type: Boolean,
+            observer: '_getIcon'
+          },
+
+          /**
+           * This stores a string containing
+           * the correct icon to be used.
+           */
+           _icon: {
+            type: String,
+            value: 'caribou-stepper-custom-icons:checked'
+          }
 
           /**
            * True if the paper-stepper is set horizontal, false otherwise
@@ -410,17 +426,20 @@
       /**
        * This function is used to get the good icon to display into the badge,
        * accordign to the 'editable' property.
-       * @param {Boolean} editable true if it's an editable step, false otherwise.
        * @private
        */
       _getIcon() {
+        let icon = "caribou-stepper-custom-icons:";
+
         if (this.locked) {
-          return "lock-outline";
-        } else if (this.editable){
-          return "create"
+          icon += "lock-outline";
+        } else if (this.editable) {
+          icon += "create"
         } else {
-          return "check";
+          icon += "check";
         }
+
+        this._icon = icon;
       }
 
       /**
