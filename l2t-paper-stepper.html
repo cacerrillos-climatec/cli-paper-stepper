@@ -248,24 +248,24 @@
       }
 
       /**
-       * This function is used to set the active step by number/id.
-       * @param {Number} id is an index.
+       * This function is used to set the active step by number/index.
+       * @param {Number} i is an index.
        */
-      setActiveById(id) {
+      setActiveByIndex(i) {
         // Catch out of range IDs
-        if (id >= this._steps.length || id < 0) {
-          console.warn("ID: " + id + " is out of range");
+        if (i >= this._steps.length || i < 0) {
+          console.warn("Index: " + i + " is out of range");
           return;
         }
 
-        let newStep = this._steps[id];
+        let newStep = this._steps[i];
 
         // If the new step is already active why bother
         if (this.activeStep == newStep && newStep.active)
           return;
         // Catch locked or backtracking
         if ((newStep.save && !newStep.editable) || newStep.locked) {
-          console.warn("ID: " + id + " is locked or is not marked as editable");
+          console.warn("Index: " + i + " is locked or is not marked as editable");
           return;
         }
         // Close all open panes

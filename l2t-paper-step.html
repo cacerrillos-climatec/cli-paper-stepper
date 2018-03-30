@@ -299,7 +299,8 @@
           */
           save: {
             type: Boolean,
-            value: false
+            value: false,
+            reflectToAttribute: true
           },
 
           /**
@@ -482,13 +483,6 @@
           if (this.stepIndex === 0)
             this.active = true;
         }
-      }
-
-      /**
-             * This function is used to set the property save to true.
-             */
-      saveStep() {
-        this.setAttribute("save", true);
       }
 
       changeActiveStep(active) {
