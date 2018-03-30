@@ -454,8 +454,10 @@
         // if parent is not linear quit
         if (!this.parentElement.linear)
           return
+        if (this.active)
+          return
 
-        this.parentElement.__closeAllStep(this);
+        this.parentElement.__closeAll();
         this.toggleStep();
         if (this.save && this.editable)
           this.$.stepButtons.setUpdate(true);
