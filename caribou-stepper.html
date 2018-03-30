@@ -276,6 +276,22 @@
       }
 
       /**
+       * This function is used to set the active step by number.
+       * @param {Number} id is an index.
+       */
+       setActiveById(id) {
+        let newStep = this.getStepById(id);
+        
+        for(let step of this._steps) {
+          if (step == newStep)
+            return
+
+          step.active = false;
+        }
+        newStep.active = true;
+      }
+
+      /**
        * This function is used to set the active step.
        * @param {Object} step The step object.
        */
