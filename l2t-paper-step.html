@@ -160,7 +160,7 @@
 
     <paper-button on-tap="_toggle">
       <iron-icon id="iconBtn" icon="[[_icon]]"></iron-icon>
-      <span class="badgeNumber">{{_badgeNumber}}</span>
+      <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
       <div id="labelBtn">{{label}}
         <span id="subtitle">Optional</span>
       </div>
@@ -253,15 +253,6 @@
            */
           label: {
             type: String
-          },
-
-          /**
-           * This is the number of the step.
-           * This property is used on the badge.
-           */
-          _badgeNumber: {
-            type: Number,
-            readOnly: true
           },
 
           /**
@@ -404,25 +395,6 @@
       }
 
       /**
-       * Into this constructor we will initialize the badge value.
-       * The badge value is determine according a property set and increment into the Caribouflex.Stepper.Context
-       */
-      constructor() {
-        super();
-        //init the badge value
-        Caribouflex.Stepper.Context.numberOfStep = Caribouflex.Stepper.Context.numberOfStep ===
-          undefined ? 1 : Caribouflex.Stepper.Context.numberOfStep + 1;
-
-        this._set_badgeNumber(Caribouflex.Stepper.Context.numberOfStep);
-
-        this._setStepperHorizontal(this.parentElement.horizontal);
-
-        //if there is no step behind, we clear the number of step context temp we used.
-        if (this.nextElementSibling === null)
-          Caribouflex.Stepper.Context.numberOfStep = undefined;
-      }
-
-      /**
        * In this ready function, we will take care of oppening the step if it's the first one 
        * And if the parameter is set for.
        * Then we will call the register function, which is used to register a step into the stepper.
@@ -457,6 +429,10 @@
         this.toggleStep();
         if (this.save && this.editable)
           this.$.stepButtons.setUpdate(true);
+      }
+
+      _badgeNum(i) {
+        return i + 1;
       }
 
       /**
@@ -511,10 +487,8 @@
         this.updateStyles();
 
         if (openFirstStep) {
-          if (this._badgeNumber === 1)
+          if (this.stepIndex === 0)
             this.active = true;
-          else if (this._badgeNumber === 2)
-            this.parentElement.setNextStep(this);
         }
       }
 
@@ -527,7 +501,7 @@
 
       changeActiveStep(active) {
         if (active)
-          this.parentElement.activeStepId = this._badgeNumber - 1;
+          this.parentElement.activeStepId = this.stepIndex;
       }
 
       fireInvalidStep() {
