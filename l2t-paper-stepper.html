@@ -161,7 +161,7 @@
         // Check valid is true
         if (currStep.valid) {
           // Save current step
-          currStep.saveStep();
+          currStep.save = true;
           // Calculate next step
           let nextStep = this._calcNextStep();
           // if there are 0 valid steps quit
@@ -211,7 +211,7 @@
       skipStep() {
         if ((this.linear && this.activeStep.optional) || !this.linear) {
           if (this.linear)
-            this.activeStep.saveStep();
+            this.activeStep.save = true;
           this.activeStep.toggleStep();
           if (this.nextStep !== null)
             this.nextStep.toggleStep();
@@ -252,7 +252,7 @@
        * @param {Number} i is an index.
        */
       setActiveByIndex(i) {
-        // Catch out of range IDs
+        // Catch out of range Indexes
         if (i >= this._steps.length || i < 0) {
           console.warn("Index: " + i + " is out of range");
           return;
@@ -277,7 +277,7 @@
         }
         // Set new step as active
         this.activeStep = newStep;
-        this.activeStepIndex = id;
+        this.activeStepIndex = i;
         newStep.active = true;
       }
 
