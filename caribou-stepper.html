@@ -281,6 +281,9 @@
        */
        setActiveById(id) {
         let newStep = this.getStepById(id);
+
+        console.log(newStep);
+        console.log(newStep.active);
         
         for(let step of this._steps) {
           if (step == newStep)
