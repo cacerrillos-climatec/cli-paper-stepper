@@ -281,7 +281,7 @@
            * This stores a boolean value
            * indicating if the step is editable.
            */
-           editable: {
+          editable: {
             type: Boolean,
             observer: '_getIcon'
           },
@@ -290,7 +290,7 @@
            * This stores a string containing
            * the correct icon to be used.
            */
-           _icon: {
+          _icon: {
             type: String,
             value: 'caribou-stepper-custom-icons:check'
           },
@@ -389,14 +389,20 @@
        * @private
        */
       _toggle() {
-        if (!this.parentElement.finish && !this.locked && (!this.parentElement.linear && (!this.save || this.editable)) ||
-          (this.parentElement.linear &&
-            this.editable)) {
-          this.parentElement.__closeAllStep(this);
-          this.toggleStep();
-          if (this.save && this.editable)
-            this.$.stepButtons.setUpdate(true);
-        }
+        // if locked or saved but not editable exit
+        if (this.locked || (this.save && !this.editable))
+          return;
+        // if parent is finished exit
+        if (this.parentElement.finish)
+          return;
+        // if parent is not linear quit
+        if (!this.parentElement.linear)
+          return
+
+        this.parentElement.__closeAllStep(this);
+        this.toggleStep();
+        if (this.save && this.editable)
+          this.$.stepButtons.setUpdate(true);
       }
 
       /**
