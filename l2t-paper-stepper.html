@@ -197,10 +197,10 @@
       isFinished() {
         let count = 0;
         for(let step of this._steps){
-          if (!step.save && !step.locked)
+          if (!step.save && !step.locked && !step.active)
             count++
         }
-        return count <= 1;
+        return !count;
       }
 
       /**
