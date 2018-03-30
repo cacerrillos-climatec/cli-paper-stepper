@@ -148,8 +148,6 @@
             bubbles: true,
             composed: true
           }));
-
-          console.log("caribou-stepper finished.");
         } else {
           this.activeStep.fireInvalidStep();
         }
@@ -162,11 +160,17 @@
        */
       openNextStep() {
         let currStep = this._steps[this.activeStepId];
+        // Check valid is true
         if (currStep.valid) {
+          // Save current step
           currStep.saveStep();
-
-          //toggle the step
+          // Calculate next step
           let nextStep = this._calcNextStep();
+          // if there are 0 valid steps quit
+          if(!nextStep)
+            return
+          
+          // Toggle active states
           currStep.active = false;
           this.activeStepId = this._steps.indexOf(nextStep);
           nextStep.active = true;
@@ -176,16 +180,12 @@
       }
 
       _calcNextStep() {
-        let stepIndex = this.activeStepId + 1;
+        let stepIndex = this._steps.length % (this.activeStepId + 1);
         let nextStep;
         while (stepIndex != this.activeStepId) {
           let checkStep = this._steps[stepIndex];
           if (checkStep.locked || (checkStep.save && !checkStep.editable)) {
-            if (stepIndex == this._steps.length-1) {
-              stepIndex = 0;
-            } else {
-              stepIndex++;
-            }
+            stepIndex = this._steps.length % (stepIndex + 1);
           } else {
             nextStep = checkStep;
             stepIndex = this.activeStepId;
@@ -333,6 +333,7 @@
        */
       setActiveStep(step) {
         this.activeStep = step;
+        this.activeStepId = this._steps.indexOf(step);
         // When we are resetting the values, the activeStep and next step depends of the 'openFirstStepOnStartup' property.
         if (!this.isResetting) {
           this.setNextStep(this.findNextStep(step));
