@@ -85,6 +85,11 @@
         font-weight: inherit;
       }
 
+      :host([locked]) div#labelBtn {
+        color: var(--step-locked-label-color, var(--step-saved-label-color));
+        font-weight: inherit;
+      }
+
       :host([save][active]) div#labelBtn,
       :host([active]) div#labelBtn {
         color: var(--step-active-label-color, #424242);
