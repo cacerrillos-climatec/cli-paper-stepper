@@ -190,10 +190,17 @@
             stepIndex = this.activeStepIndex;
           }
         }
-        if(!nextStep)
-          this.finish = true
-          
+
         return nextStep;
+      }
+
+      isFinished() {
+        let count = 0;
+        for(let step of this._steps){
+          if (!step.save && !step.locked)
+            count++
+        }
+        return count <= 1;
       }
 
       /**
