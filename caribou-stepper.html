@@ -276,10 +276,16 @@
       }
 
       /**
-       * This function is used to set the active step by number.
+       * This function is used to set the active step by number/id.
        * @param {Number} id is an index.
        */
        setActiveById(id) {
+         // Catch out of range IDs
+         if (id >= this._steps.length || id < 0) {
+          console.alert("ID: "+id+" is out of range"); 
+          return;
+         }
+
         let newStep = this.getStepById(id);
         // If the new step is already active why bother
         if (this.activeStep == newStep && newStep.active)
