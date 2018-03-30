@@ -464,7 +464,7 @@
           icon = "lock-outline";
         } else if (this.editable) {
           icon = "create"
-        } 
+        }
 
         this._icon = icon;
       }
@@ -486,8 +486,7 @@
       }
 
       changeActiveStep(active) {
-        if (this.parentElement.isFinished())
-          this.$.stepButtons.setFinish(true);
+        this.$.stepButtons.setFinish(this.parentElement.isFinished());
 
         if (active)
           this.parentElement.activeStepIndex = this.stepIndex;
