@@ -436,9 +436,9 @@
        * @param {Boolean} isLast This property is used to indicate if this step is the last step of the stepper.
        *                         If it is, we will call the function setFinish() to set the good button.
        */
-      toggleStep(isLast) {
+      toggleStep() {
 
-        if (isLast !== undefined && isLast)
+        if (this.parentElement.isFinished())
           this.$.stepButtons.setFinish(true);
 
         this.$.stepContent.toggle();
