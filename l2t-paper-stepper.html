@@ -65,7 +65,7 @@
             }
           },
 
-          _activeStepId: {
+          _activeStepIndex: {
             type: Number,
             value: 0
           },
@@ -121,7 +121,7 @@
        *  All elements registered are added into the _steps property.
        */
       _registerStep(element) {
-        this.push('_steps', element);
+        this._steps.push(element);
         element.stepIndex = this._steps.length - 1;
         if(element.stepIndex == 0 && this.opened)
           element.active = true
@@ -139,7 +139,7 @@
        * @private
        */
       __finishStep(e) {
-        if (this.activeStep.validate()) {
+        if (this.activeStep.valid) {
           this.nextStep();
           this._setFinish(true);
           this.dispatchEvent(new CustomEvent('stepper-finished', {
@@ -157,7 +157,7 @@
        * Then it will open the next step if there is one.
        */
       nextStep() {
-        let currStep = this._steps[this.activeStepId];
+        let currStep = this._steps[this.activeStepIndex];
         // Check valid is true
         if (currStep.valid) {
           // Save current step
@@ -170,7 +170,7 @@
 
           // Toggle active states
           currStep.active = false;
-          this.activeStepId = this._steps.indexOf(nextStep);
+          this.activeStepIndex = this._steps.indexOf(nextStep);
           nextStep.active = true;
         } else {
           currStep.fireInvalidStep();
@@ -178,15 +178,15 @@
       }
 
       _calcNextStep() {
-        let stepIndex = (this.activeStepId + 1) % this._steps.length;
+        let stepIndex = (this.activeStepIndex + 1) % this._steps.length;
         let nextStep;
-        while (stepIndex != this.activeStepId) {
+        while (stepIndex != this.activeStepIndex) {
           let checkStep = this._steps[stepIndex];
           if (checkStep.locked || checkStep.save) {
             stepIndex = (stepIndex + 1) % this._steps.length;
           } else {
             nextStep = checkStep;
-            stepIndex = this.activeStepId;
+            stepIndex = this.activeStepIndex;
           }
         }
         return nextStep;
@@ -277,7 +277,7 @@
         }
         // Set new step as active
         this.activeStep = newStep;
-        this.activeStepId = id;
+        this.activeStepIndex = id;
         newStep.active = true;
       }
 
