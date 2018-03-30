@@ -1,7 +1,7 @@
 {
-  "name": "caribou-stepper",
+  "name": "l2t-paper-stepper",
   "description": "Stepper convey progress through numbered steps.",
-  "main": "caribou-stepper.html",
+  "main": "l2t-paper-stepper.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "paper-button": "PolymerElements/paper-button#^2.0.0",

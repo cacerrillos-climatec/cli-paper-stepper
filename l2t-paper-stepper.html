@@ -21,7 +21,7 @@
   <script>
     /**
      * `<l2t-paper-stepper>` is an element used to display progress through a sequence of logical and numbered steps.
-     * This element need to be used with the `caribou-step` element.
+     * This element need to be used with the `l2t-paper-step` element.
      * You can add the number of step you want inside your stepper.
      * You can set multiple attribute to the stepper : 
      * - linear : this require users to complete one step in order to move on to the next.
@@ -33,20 +33,18 @@
      * Example:
      * ```html
      * <l2t-paper-stepper linear>
-     *     <caribou-step>...</caribout-step>
-     *     <caribou-step>...</caribout-step>
-     *     <caribou-step>...</caribout-step>
+     *     <l2t-paper-step>...</l2t-paper-step>
+     *     <l2t-paper-step>...</l2t-paper-step>
+     *     <l2t-paper-step>...</l2t-paper-step>
      * </l2t-paper-stepper>
      * ```
      * 
      * @polymer
      * @customElement
-     * @memberof Caribouflex
-     * @mixes Caribouflex.Stepper.StepperPropertyMixin
      * @demo demo/index.html
      * @element l2t-paper-stepper
      */
-    class CaribouStepperElement extends Polymer.Element {
+    class L2tPaperStepper extends Polymer.Element {
 
       /**
        * Fired when the stepper is finished and all the steps are saved.
@@ -173,7 +171,7 @@
       }
 
       /**
-       * This function is used by the `caribou-step` to register into the `l2t-paper-stepper`.
+       * This function is used by the `l2t-paper-step` to register into the `l2t-paper-stepper`.
        * Then multiple event fired from the stepper can be handled :
        *  - last-step-closed 
        *  - continue-clicked : call the __nextStep() function. 
@@ -505,12 +503,6 @@
       }
     }
 
-    window.customElements.define(CaribouStepperElement.is, CaribouStepperElement);
-
-    /**
-     * @namespace Caribouflex
-     */
-    window.Caribouflex = window.Caribouflex || {};
-    Caribouflex.CaribouStepperElement = CaribouStepperElement;
+    window.customElements.define(L2tPaperStepper.is, L2tPaperStepper);
   </script>
 </dom-module>

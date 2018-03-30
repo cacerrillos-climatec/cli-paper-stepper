@@ -2,7 +2,7 @@
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="caribou-stepper-custom-icons.html">
+<link rel="import" href="l2t-paper-stepper-custom-icons.html">
 <link rel="import" href="l2t-paper-step-action-buttons.html">
 
 <dom-module id="l2t-paper-step">
@@ -169,7 +169,7 @@
       <iron-collapse id="stepContent" opened="{{active}}" horizontal$="{{stepperHorizontal}}">
         <slot></slot>
         <l2t-paper-step-action-buttons id="stepButtons" continue-label="[[continueLabel]]" finish-label="[[finishLabel]]" update-label="[[updateLabel]]"
-          skip-label="[[skipLabel]]" skip-button="[[skipButton]]" back-label="[[backLabel]]" back-button="[[backButton]]"></caribou-step-action-buttons>
+          skip-label="[[skipLabel]]" skip-button="[[skipButton]]" back-label="[[backLabel]]" back-button="[[backButton]]"></l2t-paper-step-action-buttons>
       </iron-collapse>
     </div>
   </template>
@@ -180,7 +180,7 @@
     Caribouflex.Stepper.Context = Caribouflex.Stepper.Context || {};
 
     /**
-     * `<l2t-paper-step>` is an element that need to be surrounded by a `<caribou-stepper>` element.
+     * `<l2t-paper-step>` is an element that need to be surrounded by a `<l2t-paper-stepper>` element.
      * 
      * This element correspond correspond to one step of the all stepper.
      * It can be Editable and Optional. 
@@ -188,13 +188,13 @@
      * Also you can choose the name of each buttons step.
      * If the stepper is set as Linear, the Skip button will do nothing except if the property Optional is set.
      *         
-     * You can add whatever you want inside the `<caribou-step>` element tag.
+     * You can add whatever you want inside the `<l2t-paper-step>` element tag.
      * 
      * Each steps will be numbered following the order added into the stepper.
      * 
      * Example:
      * ```html
-     * <caribou-step label="Information" skip-button optional>
+     * <l2t-paper-step label="Information" skip-button optional>
      * 	<paper-input always-float-label label="Surname"></paper-input>
      * 	<paper-input label="username">
      * 		<iron-icon icon="mail" slot="prefix"></iron-icon>
@@ -293,7 +293,7 @@
            */
           _icon: {
             type: String,
-            value: 'caribou-stepper-custom-icons:check'
+            value: 'l2t-paper-stepper-custom-icons:check'
           },
 
           /**
@@ -529,7 +529,7 @@
        * @private
        */
       _getIcon() {
-        let icon = "caribou-stepper-custom-icons:";
+        let icon = "l2t-paper-stepper-custom-icons:";
 
         if (this.locked) {
           icon += "lock-outline";
