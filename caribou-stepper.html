@@ -281,21 +281,19 @@
        */
        setActiveById(id) {
         let newStep = this.getStepById(id);
-
-        console.log(newStep);
-        console.log(newStep.active);
-        
+        // If the new step is already active why bother
+        if (this.activeStep == newStep && newStep.active)
+            return;
+        // Close all open panes
         for(let step of this._steps) {
           if (step == newStep)
             continue;
 
           step.active = false;
         }
+        // Set new step as active
         this.activeStep = newStep;
         newStep.active = true;
-
-        console.log(newStep);
-        console.log(newStep.active);
       }
 
       /**
