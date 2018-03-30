@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="caribou-stepper-stepper-property-mixin.html">
 
-<dom-module id="caribou-stepper">
+<dom-module id="l2t-paper-stepper">
   <template>
     <style>
       :host {
@@ -21,7 +20,7 @@
   </template>
   <script>
     /**
-     * `<caribou-stepper>` is an element used to display progress through a sequence of logical and numbered steps.
+     * `<l2t-paper-stepper>` is an element used to display progress through a sequence of logical and numbered steps.
      * This element need to be used with the `caribou-step` element.
      * You can add the number of step you want inside your stepper.
      * You can set multiple attribute to the stepper : 
@@ -33,11 +32,11 @@
      *     
      * Example:
      * ```html
-     * <caribou-stepper linear>
+     * <l2t-paper-stepper linear>
      *     <caribou-step>...</caribout-step>
      *     <caribou-step>...</caribout-step>
      *     <caribou-step>...</caribout-step>
-     * </caribou-stepper>
+     * </l2t-paper-stepper>
      * ```
      * 
      * @polymer
@@ -45,9 +44,9 @@
      * @memberof Caribouflex
      * @mixes Caribouflex.Stepper.StepperPropertyMixin
      * @demo demo/index.html
-     * @element caribou-stepper
+     * @element l2t-paper-stepper
      */
-    class CaribouStepperElement extends Caribouflex.Stepper.StepperPropertyMixin(Polymer.Element) {
+    class CaribouStepperElement extends Polymer.Element {
 
       /**
        * Fired when the stepper is finished and all the steps are saved.
@@ -57,7 +56,7 @@
        */
 
       static get is() {
-        return 'caribou-stepper';
+        return 'l2t-paper-stepper';
       }
 
       static get properties() {
@@ -83,12 +82,98 @@
             type: Boolean,
             value: false,
             readOnly: true
+          },
+
+          /**
+          * This property is used to indicate if the stepper require users to complete one step in order to move on to the next.
+          * If linear is false, it allow users to enter a multi-step flow at any point.
+          */
+          linear: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * This is used to know if the stepper is render vertically or horizontally.
+           */
+          horizontal: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * This property is used to indicate when the view is displayed for mobile.
+           */
+          mobile: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * If true, after the stepper is loaded, if will open the first step.
+           */
+          openFirstStepOnStartup: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * This is the active step element.
+           * If the property is equal to : 
+           *  - null : That means there is no step active
+           *  - undefined : That means no step has been opened yet.
+           */
+          activeStep: {
+            type: Object
+          },
+
+          /**
+           * This is the step following the current active step.
+           */
+          nextStep: {
+            type: Object
+          },
+
+          /**
+           * This is the step that can be open before the active step.
+           * It can be an editabled step or a step unsaved.
+           */
+          previousStep: {
+            type: Object
+          },
+
+          /**
+           * Property used to indicate if the stepper is finished or not.
+           * @readonly
+           */
+          finish: {
+            type: Boolean,
+            value: false,
+            readOnly: true
+          },
+
+          /**
+           * Used for the transition in horizontal mode.
+           * This is the step where we are going. (step targeting)
+           * @private
+           */
+          __toStep: {
+            type: Object
+          },
+
+          /**
+           * Used for the transition in horizontal mode.
+           * This is the step we are coming from.
+           * @private
+           */
+          __fromStep: {
+            type: Object
           }
         };
       }
 
       /**
-       * This function is used by the `caribou-step` to register into the `caribou-stepper`.
+       * This function is used by the `caribou-step` to register into the `l2t-paper-stepper`.
        * Then multiple event fired from the stepper can be handled :
        *  - last-step-closed 
        *  - continue-clicked : call the __nextStep() function. 
@@ -167,9 +252,9 @@
           // Calculate next step
           let nextStep = this._calcNextStep();
           // if there are 0 valid steps quit
-          if(!nextStep)
+          if (!nextStep)
             return
-          
+
           // Toggle active states
           currStep.active = false;
           this.activeStepId = this._steps.indexOf(nextStep);
@@ -297,12 +382,12 @@
        * This function is used to set the active step by number/id.
        * @param {Number} id is an index.
        */
-       setActiveById(id) {
-         // Catch out of range IDs
-         if (id >= this._steps.length || id < 0) {
-          console.warn("ID: "+id+" is out of range"); 
+      setActiveById(id) {
+        // Catch out of range IDs
+        if (id >= this._steps.length || id < 0) {
+          console.warn("ID: " + id + " is out of range");
           return;
-         }
+        }
 
         let newStep = this.getStepById(id);
 
@@ -311,11 +396,11 @@
           return;
         // Catch locked or backtracking
         if ((newStep.save && !newStep.editable) || newStep.locked) {
-          console.warn("ID: "+id+" is locked or is not marked as editable"); 
+          console.warn("ID: " + id + " is locked or is not marked as editable");
           return;
-         }
+        }
         // Close all open panes
-        for(let step of this._steps) {
+        for (let step of this._steps) {
           if (step == newStep)
             continue;
 

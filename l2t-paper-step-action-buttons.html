@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
-<dom-module id="caribou-step-action-buttons">
+<dom-module id="l2t-paper-step-action-buttons">
     <template>
         <style>
              :host {
@@ -27,10 +27,10 @@
 
     <script>
         /**
-         * `caribou-step-action-buttons` is an element used to display a panel of action button used to navigate through the stepper.
+         * `l2t-paper-step-action-buttons` is an element used to display a panel of action button used to navigate through the stepper.
          * These button fires each one an event.
          *     
-         * To change the label of each button, refer to the `caribou-step` element.
+         * To change the label of each button, refer to the `l2t-paper-step` element.
          *     
          * Custom property | Description | Default 
          * ----------------|-------------|---------- 
@@ -39,9 +39,9 @@
          *
          * @polymer
          * @customElement
-         * @element caribou-step-action-buttons
+         * @element l2t-paper-step-action-buttons
          */
-        class CaribouStepActionButtonsElement extends Polymer.Element {
+        class L2tPaperStepActionButtons extends Polymer.Element {
 
             /**
              * Fired when the continue button is clicked.
@@ -79,7 +79,7 @@
              */
 
             static get is() {
-                return 'caribou-step-action-buttons';
+                return 'l2t-paper-step-action-buttons';
             }
 
             static get properties() {
@@ -188,12 +188,6 @@
             }
         }
 
-        window.customElements.define(CaribouStepActionButtonsElement.is, CaribouStepActionButtonsElement);
-
-        /**
-         * @namespace Caribouflex
-         */
-        window.Caribouflex = window.Caribouflex || {};
-        Caribouflex.CaribouStepActionButtonsElement = CaribouStepActionButtonsElement;
+        window.customElements.define(L2tPaperStepActionButtons.is, L2tPaperStepActionButtons);
     </script>
 </dom-module>

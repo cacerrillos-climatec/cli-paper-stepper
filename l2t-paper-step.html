@@ -3,14 +3,13 @@
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="caribou-stepper-custom-icons.html">
-<link rel="import" href="caribou-step-action-buttons.html">
-<link rel="import" href="caribou-stepper-step-property-mixin.html">
+<link rel="import" href="l2t-paper-step-action-buttons.html">
 
-
-<dom-module id="caribou-step">
+<dom-module id="l2t-paper-step">
   <template>
     <style>
       /* General */
+
       :host {
         height: inherit;
       }
@@ -78,6 +77,7 @@
       }
 
       /* label button */
+
       :host([save]) div#labelBtn {
         color: var(--step-saved-label-color, #424242);
         font-weight: inherit;
@@ -149,7 +149,7 @@
         color: var(--step-badge-content-color, var(--primary-background-color));
       }
 
-      caribou-step-action-buttons paper-button {
+      l2t-paper-step-action-buttons paper-button {
         @apply --button-style;
       }
 
@@ -168,7 +168,7 @@
     <div class="layout">
       <iron-collapse id="stepContent" opened="{{active}}" horizontal$="{{stepperHorizontal}}">
         <slot></slot>
-        <caribou-step-action-buttons id="stepButtons" continue-label="[[continueLabel]]" finish-label="[[finishLabel]]" update-label="[[updateLabel]]"
+        <l2t-paper-step-action-buttons id="stepButtons" continue-label="[[continueLabel]]" finish-label="[[finishLabel]]" update-label="[[updateLabel]]"
           skip-label="[[skipLabel]]" skip-button="[[skipButton]]" back-label="[[backLabel]]" back-button="[[backButton]]"></caribou-step-action-buttons>
       </iron-collapse>
     </div>
@@ -180,7 +180,7 @@
     Caribouflex.Stepper.Context = Caribouflex.Stepper.Context || {};
 
     /**
-     * `<caribou-step>` is an element that need to be surrounded by a `<caribou-stepper>` element.
+     * `<l2t-paper-step>` is an element that need to be surrounded by a `<caribou-stepper>` element.
      * 
      * This element correspond correspond to one step of the all stepper.
      * It can be Editable and Optional. 
@@ -200,7 +200,7 @@
      * 		<iron-icon icon="mail" slot="prefix"></iron-icon>
      * 		<div slot="suffix">@email.com</div>
      * 	</paper-input>
-     * </caribou-step>
+     * </l2t-paper-step>
      * ```
      * 
      * ### Styling The following custom properties and mixins are available for styling: 
@@ -221,11 +221,9 @@
      * 
      * @polymer
      * @customElement
-     * @memberof Caribouflex
-     * @mixes Caribouflex.Stepper.StepPropertyMixin
-     * @element caribou-step
+     * @element l2t-paper-step
      */
-    class CaribouStepElement extends Caribouflex.Stepper.StepPropertyMixin(Polymer.Element) {
+    class L2tPaperStep extends Polymer.Element {
 
       /**
        * Fired when the last step has been finished.
@@ -244,7 +242,7 @@
        */
 
       static get is() {
-        return 'caribou-step';
+        return 'l2t-paper-step';
       }
 
       static get properties() {
@@ -306,6 +304,99 @@
             value: false,
             readOnly: true,
             reflectToAttribute: true
+          },
+
+          /**
+          * Property used to indicate if the step is saved.
+          * True if it's saved, false otherwise.
+          */
+          save: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Property used to indicate if the step is optional.
+           * True if it's optional, false otherwise.
+           */
+          optional: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Property used to indicate if the step is active.
+           * If the step is active that means it will be open, and it's the current step we are focused on.
+           * True if it's active, false otherwise.
+           */
+          active: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+            observer: 'changeActiveStep'
+          },
+
+          /**
+           * The continue button text value
+           * 'Continue' by default
+           */
+          continueLabel: {
+            type: String,
+            value: "Continue"
+          },
+
+          /**
+           * The finish button text value
+           * 'Finish' by default
+           */
+          finishLabel: {
+            type: String,
+            value: "Finish"
+          },
+
+          /**
+           * The update button text value
+           * 'Update' by default
+           */
+          updateLabel: {
+            type: String,
+            value: "Update"
+          },
+
+          /**
+           * The skip button text value
+           * 'Skip' by default
+           */
+          skipLabel: {
+            type: String,
+            value: "Skip"
+          },
+
+          /**
+           * True to display the skip button, false otherwise.
+           * If the step is linear, the skip button will do nothing, except if the property Optional is true.
+           */
+          skipButton: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
+
+          /**
+           * The back button text value
+           * 'Back' by default
+           */
+          backLabel: {
+            type: String,
+            value: "Back"
+          },
+
+          /**
+           * True to display the back button, false otherwise.
+           */
+          backButton: {
+            type: Boolean,
+            value: false
           }
         };
       }
@@ -469,6 +560,47 @@
         }
       }
 
+      /**
+             * This function is used to set the property save to true.
+             */
+      saveStep() {
+        this.setAttribute("save", true);
+      }
+
+      /**
+       * Getter used to know if the step is active or not.
+       * @return {Boolean} True if it is, false otherwise.
+       */
+      isActive() {
+        return this.active;
+      }
+
+      /**
+       * This function is used to register an element to the parent.
+       * @private
+       */
+      _register() {
+        this.parentElement._registerStep(this);
+      }
+
+      validate() {
+        return true;
+      }
+
+      /**
+       * This function is used to know if the property 'openFirstStepOnStartup' is set to true.
+       * @private
+       */
+      _getOpenFirstStepOnStartup() {
+        return this.parentElement.openFirstStepOnStartup;
+      }
+
+      changeActiveStep(active) {
+        if (active)
+          this.parentElement.setActiveStep(this);
+        this.parentElement.activeStepId = this._badgeNumber - 1;
+      }
+
       fireInvalidStep() {
         this.dispatchEvent(new CustomEvent('step-invalid', {
           bubbles: true,
@@ -477,12 +609,6 @@
       }
     }
 
-    window.customElements.define(CaribouStepElement.is, CaribouStepElement);
-
-    /**
-     * @namespace Caribouflex
-     */
-    window.Caribouflex = window.Caribouflex || {};
-    Caribouflex.CaribouStepElement = CaribouStepElement;
+    window.customElements.define(L2tPaperStep.is, L2tPaperStep);
   </script>
 </dom-module>
