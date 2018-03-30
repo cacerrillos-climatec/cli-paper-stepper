@@ -486,6 +486,9 @@
       }
 
       changeActiveStep(active) {
+        if (this.parentElement.isFinished())
+          this.$.stepButtons.setFinish(true);
+
         if (active)
           this.parentElement.activeStepIndex = this.stepIndex;
       }
