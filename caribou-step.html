@@ -111,7 +111,7 @@
         --iron-icon-stroke-color: var(--step-badge-content-color, #FFFFFF);
       }
 
-      :host([save]) iron-icon#iconBtn {
+      :host([save]) iron-icon#iconBtn, :host([locked]) iron-icon#iconBtn {
         display: block;
         border-color: var(--step-save-badge-color, var(--primary-color));
         background-color: var(--step-save-badge-color, var(--primary-color));
@@ -119,7 +119,7 @@
 
       /* Badge */
 
-      :host([save]) span.badgeNumber {
+      :host([save]) span.badgeNumber, :host([locked]) span.badgeNumber {
         display: none;
       }
 
