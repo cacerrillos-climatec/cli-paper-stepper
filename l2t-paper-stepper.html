@@ -24,7 +24,7 @@
      *     If linear is false, it allow users to enter a multi-step flow at any point.
      * - Mobile : TODO - This is used when there is multitude of step on a mobile view we will compact it.
      * - Horizontal (TODO): True if you want to use the stepper horizontaly. Otherwise (default) it's vertical.
-     * - OpenFirstStepOnStartup : If true, the first step will be open after load time.
+     * - opened : If true, the first step will be open after load time.
      *     
      * Example:
      * ```html
@@ -82,7 +82,7 @@
           /**
            * If true, after the stepper is loaded, if will open the first step.
            */
-          openFirstStepOnStartup: {
+          opened: {
             type: Boolean,
             value: false
           },
@@ -123,7 +123,7 @@
       _registerStep(element) {
         this.push('_steps', element);
         element.stepIndex = this._steps.length - 1;
-        if(element.stepIndex == 0 && this.openFirstStepOnStartup)
+        if(element.stepIndex == 0 && this.opened)
           element.active = true
         // element.addEventListener("last-step-closed", this._validStepper.bind(this));
         element.addEventListener("continue-clicked", this.__nextStep.bind(this));
@@ -319,7 +319,7 @@
         this.nextStep = undefined;
         for (var i = 0; i < this._steps.length; i++) {
           var step = this._steps[i];
-          step.reset(this.openFirstStepOnStartup);
+          step.reset(this.opened);
         }
         this._setIsResetting(false);
       }
