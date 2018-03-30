@@ -11,10 +11,6 @@
       :host[hidden] {
         display: none;
       }
-
-      :host([horizontal]) {
-        @apply --layout-horizontal;
-      }
     </style>
     <slot></slot>
   </template>
@@ -69,17 +65,9 @@
             }
           },
 
-          _activeStepId: Number,
-
-          /**
-           * This property is toggled when the reset function is called.
-           * When we are currently resetting the value, the property is true, false otherwise.
-           * @readonly
-           */
-          isResetting: {
-            type: Boolean,
-            value: false,
-            readOnly: true
+          _activeStepId: {
+            type: Number,
+            value: 0
           },
 
           /**
@@ -126,21 +114,6 @@
           },
 
           /**
-           * This is the step following the current active step.
-           */
-          nextStep: {
-            type: Object
-          },
-
-          /**
-           * This is the step that can be open before the active step.
-           * It can be an editabled step or a step unsaved.
-           */
-          previousStep: {
-            type: Object
-          },
-
-          /**
            * Property used to indicate if the stepper is finished or not.
            * @readonly
            */
@@ -149,24 +122,6 @@
             value: false,
             readOnly: true
           },
-
-          /**
-           * Used for the transition in horizontal mode.
-           * This is the step where we are going. (step targeting)
-           * @private
-           */
-          __toStep: {
-            type: Object
-          },
-
-          /**
-           * Used for the transition in horizontal mode.
-           * This is the step we are coming from.
-           * @private
-           */
-          __fromStep: {
-            type: Object
-          }
         };
       }
 
@@ -197,7 +152,7 @@
        * @private
        */
       __nextStep(e) {
-        this.openNextStep();
+        this.nextStep();
       }
 
       /**
@@ -225,7 +180,7 @@
        */
       __finishStep(e) {
         if (this.activeStep.validate()) {
-          this.openNextStep();
+          this.nextStep();
           this._setFinish(true);
           this.dispatchEvent(new CustomEvent('stepper-finished', {
             bubbles: true,
@@ -241,7 +196,7 @@
        * It will save and close the current active step.
        * Then it will open the next step if there is one.
        */
-      openNextStep() {
+      nextStep() {
         let currStep = this._steps[this.activeStepId];
         // Check valid is true
         if (currStep.valid) {
@@ -284,7 +239,6 @@
        */
       openPreviousStep() {
         this.activeStep.toggleStep();
-        this.removeActiveStep();
         if (this.previousStep !== null)
           this.previousStep.toggleStep();
       }
@@ -306,45 +260,12 @@
       }
 
       /**
-       * This function is used to close all the steps and save the target step
-       * that is the initiative of the close.
-       * @param {Object} stepInitiator The step inititor and targeted.
-       */
-      __closeAllStep(stepInitiator) {
-        //we set the to step used for the transition from the step button.
-        this.__toStep = stepInitiator;
-        this.closeAllStep();
-      }
-
-      /**
        * This function is used to close all the steps.
        */
-      closeAllStep() {
-        for (var i = 0; i < this._steps.length; i++) {
-          var step = this.getStepById(i);
-          if (step.isActive()) {
-            step.toggleStep();
-          }
+      closeAll() {
+        for (let step of this._steps) {
+          step.active = false;
         }
-      }
-
-      /**
-       * This function is used to check if all steps are saved, 
-       * if not, it will open the first step in linear order that is not saved.
-       * 
-       * @return {Object} The stepper to open if there is or null.
-       * @private
-       */
-      _getUnsavedStep() {
-        for (var i = 0; i < this._steps.length; i++) {
-          var step = this.getStepById(i);
-          if (!step.save) {
-            if (step !== this.activeStep)
-              return step;
-          }
-        }
-
-        return null;
       }
 
       /**
@@ -356,7 +277,7 @@
        */
       _getPreviousStep() {
         for (var i = this.activeStep._badgeNumber - 1; i == 0; i--) {
-          var step = this.getStepById(i);
+          var step = this._steps[i];
           if (!step.save || step.editable) {
             if (step !== this.activeStep)
               return step;
@@ -364,16 +285,6 @@
         }
 
         return null;
-      }
-
-      /**
-       * This function is used to return the step element 
-       * situated at the specific ID.
-       * @param {Number} id The id of the step to retrieve
-       * @return {Object} The stepper object.
-       */
-      getStepById(id) {
-        return this.get(['_steps', id])
       }
 
       /**
@@ -387,7 +298,7 @@
           return;
         }
 
-        let newStep = this.getStepById(id);
+        let newStep = this._steps[id];
 
         // If the new step is already active why bother
         if (this.activeStep == newStep && newStep.active)
@@ -411,82 +322,6 @@
       }
 
       /**
-       * This function is used to set the active step.
-       * @param {Object} step The step object.
-       */
-      setActiveStep(step) {
-        this.activeStep = step;
-        this.activeStepId = this._steps.indexOf(step);
-        // When we are resetting the values, the activeStep and next step depends of the 'openFirstStepOnStartup' property.
-        if (!this.isResetting) {
-          this.setNextStep(this.findNextStep(step));
-          this.setPreviousStep(this.findPreviousStep(step));
-          if (this.nextStep === null)
-            this.activeStep.setFinishActionButtonsState(true);
-        }
-      }
-
-      /**
-       * This function is used clear the active step property.
-       */
-      removeActiveStep() {
-        this.activeStep = null;
-      }
-
-      /**
-       * This function is used to set the nextStep property.
-       * @param {Object} step The step object
-       */
-      setNextStep(step) {
-        this.nextStep = step;
-      }
-
-      /**
-       * This function is used to set the previousStep property.
-       * @param {Object} step The step object
-       */
-      setPreviousStep(step) {
-        this.previousStep = step;
-      }
-
-      /**
-       * This function is used to find the next next following step of a specific one.
-       * @param {Object} activeStep The step from which we are looking the next possible step.
-       */
-      findNextStep(activeStep) {
-        if (activeStep.nextElementSibling !== undefined && activeStep.nextElementSibling !== null && !
-          activeStep.nextElementSibling.save) {
-          return activeStep.nextElementSibling;
-        } else if (activeStep.nextElementSibling !== undefined && activeStep.nextElementSibling !==
-          null)
-          return this.findNextStep(activeStep.nextElementSibling);
-        else {
-          return this._getUnsavedStep();
-        }
-      }
-
-      /**
-       * This function is used to find the next next following step of a specific one.
-       * @param {Object} activeStep The step from which we are looking the next possible step.
-       */
-      findPreviousStep(activeStep) {
-        if (activeStep.previousElementSibling !== undefined && activeStep.previousElementSibling ===
-          null)
-          return activeStep.previousElementSibling;
-
-        if (activeStep.previousElementSibling !== undefined && activeStep.previousElementSibling !==
-          null && (!activeStep.previousElementSibling.save || activeStep.previousElementSibling.editable)
-        ) {
-          return activeStep.previousElementSibling;
-        } else if (activeStep.previousElementSibling !== undefined && activeStep.previousElementSibling !==
-          null)
-          return this.findPreviousStep(activeStep.previousElementSibling);
-        else {
-          return this._getPreviousStep();
-        }
-      }
-
-      /**
        * This function is used to reinitialize all the parameter of this element 
        * and from all the steppers.
        */
@@ -496,7 +331,7 @@
         this.activeStep = undefined;
         this.nextStep = undefined;
         for (var i = 0; i < this._steps.length; i++) {
-          var step = this.getStepById(i);
+          var step = this._steps[i];
           step.reset(this.openFirstStepOnStartup);
         }
         this._setIsResetting(false);
