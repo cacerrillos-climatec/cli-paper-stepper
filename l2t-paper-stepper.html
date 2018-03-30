@@ -128,36 +128,9 @@
         // element.addEventListener("last-step-closed", this._validStepper.bind(this));
         element.addEventListener("continue-clicked", this.nextStep.bind(this));
         element.addEventListener("finish-clicked", this.__finishStep.bind(this));
-        element.addEventListener("skip-clicked", this.__skipStep.bind(this));
-        element.addEventListener("back-clicked", this.__previousStep.bind(this));
+        element.addEventListener("skip-clicked", this.skipStep.bind(this));
+        element.addEventListener("back-clicked", this.openPreviousStep.bind(this));
         element.addEventListener("update-clicked", this.nextStep.bind(this));
-      }
-
-      /**
-       * This is a private callback function used to go to the next step when a button is clicked.
-       * This will save and close the active step, then open the next one. 
-       * @private
-       */
-      __nextStep(e) {
-        this.nextStep();
-      }
-
-      /**
-       * This is a private callback function used to skip the current state and open the next one.
-       * This can be done only if we are in linear mode.
-       * @private
-       */
-      __skipStep(e) {
-        this.skipStep();
-      }
-
-      /**
-       * This is a private callback function used to skip the current state and open the next one.
-       * This can be done only if we are in linear mode.
-       * @private
-       */
-      __previousStep(e) {
-        this.openPreviousStep();
       }
 
       /**
@@ -209,7 +182,7 @@
         let nextStep;
         while (stepIndex != this.activeStepId) {
           let checkStep = this._steps[stepIndex];
-          if (checkStep.locked || (checkStep.save && !checkStep.editable)) {
+          if (checkStep.locked || checkStep.save) {
             stepIndex = (stepIndex + 1) % this._steps.length;
           } else {
             nextStep = checkStep;
