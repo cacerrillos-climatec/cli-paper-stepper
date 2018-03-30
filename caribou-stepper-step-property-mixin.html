@@ -153,6 +153,7 @@
             changeActiveStep(active) {
                 if (active)
                     this.parentElement.setActiveStep(this);
+                    this.parentElement.activeStepId = this._badgeNumber - 1;
             }
         }
     }
