@@ -14,65 +14,65 @@
         padding: 10px 31.12px;
       }
 
-      .toggleHead {
+      .toggleHdr {
         display: flex;
         justify-content: flex-start;
         margin: 0;
       }
 
-      :host([optional]) #subtitle {
+      :host([optional]) .subtitle {
         font-size: .8em;
         margin-top: 2px;
       }
 
-      :host([save]) div#labelBtn {
+      :host([save]) .labelBtn {
         color: var(--step-saved-label-color, var(--primary-text-color));
       }
 
-      :host([locked]) div#labelBtn {
+      :host([locked]) .labelBtn {
         color: var(--step-locked-label-color, var(--disabled-text-color));
       }
 
-      :host([active]) div#labelBtn,
-      :host([save][active]) div#labelBtn {
+      :host([active]) .labelBtn,
+      :host([save][active]) .labelBtn {
         color: var(--step-active-label-color, var(--primary-text-color));
         font-weight: 600
       }
 
-      div#labelBtn {
+      .labelBtn {
         align-self: center;
         padding: 0 16px;
         color: var(--step-label-color, var(--disabled-text-color))
       }
 
-      :host iron-icon#iconBtn {
+      :host .iconBtn {
         display: none;
       }
 
-      :host([active]) span.badgeNumber {
+      :host([active]) .badgeNumber {
         background-color: var(--step-active-badge-color, var(--primary-color))
       }
 
-      :host([save]) iron-icon#iconBtn {
+      :host([save]) .iconBtn {
         background-color: var(--step-save-badge-color, var(--primary-color))
       }
 
-      :host([locked]) iron-icon#iconBtn {
+      :host([locked]) .iconBtn {
         background-color: var(--step-locked-badge-color, var(--disabled-text-color))
       }
 
-      :host([locked]) iron-icon#iconBtn,
-      :host([save]) iron-icon#iconBtn {
+      :host([locked]) .iconBtn,
+      :host([save]) .iconBtn {
         display: block
       }
 
-      :host([locked]) span.badgeNumber,
-      :host([save]) span.badgeNumber {
+      :host([locked]) .badgeNumber,
+      :host([save]) .badgeNumber {
         display: none
       }
 
-      iron-icon#iconBtn,
-      span.badgeNumber {
+      .iconBtn,
+      .badgeNumber {
         --iron-icon-height: calc(var(--step-badge-height, 30px) - 12px);
         --iron-icon-width: calc(var(--step-badge-height, 30px) - 12px);
         width: calc(var(--step-badge-height, 30px) - 12px);
@@ -89,17 +89,17 @@
       }
     </style>
 
-    <paper-button class="toggleHead" on-tap="_setValidActive">
-      <iron-icon id="iconBtn" icon="[[_getIcon(editable, save, locked)]]"></iron-icon>
+    <paper-button class="toggleHdr" on-tap="_setValidActive">
+      <iron-icon class="iconBtn" icon="[[_getIcon(editable, save, locked)]]"></iron-icon>
       <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
-      <div id="labelBtn">{{label}}
+      <div class="labelBtn">{{label}}
         <template is="dom-if" if="{{optional}}">
-          <div id="subtitle">OPTIONAL</div>
+          <div class="subtitle">OPTIONAL</div>
         </template>
       </div>
     </paper-button>
     <div class="layout">
-      <iron-collapse id="stepContent" opened="{{active}}">
+      <iron-collapse opened="{{active}}">
         <slot></slot>
         <l2t-paper-step-action-buttons id="stepButtons" continue-label="[[continueLabel]]" finish-label="[[finishLabel]]" update-label="[[updateLabel]]"
           skip-label="[[skipLabel]]" skip-button="[[skipButton]]" back-label="[[backLabel]]" back-button="[[backButton]]"></l2t-paper-step-action-buttons>
@@ -144,15 +144,6 @@
      * @element l2t-paper-step
      */
     class L2tPaperStep extends Polymer.Element {
-
-      /**
-       * Fired when the last step has been finished.
-       * This event is declared in the 'StepPropertyMixin'.
-       * Bubble event.
-       * @event last-step-closed
-       * @param {Object} detail empty
-       */
-
       /**
        * Fired when the step is invalid to the validation the user defined.
        * @event step-invalid
@@ -169,7 +160,6 @@
           */
           active: {
             type: Boolean,
-            value: false,
             reflectToAttribute: true,
             observer: 'activeStepObserver'
           },
@@ -177,8 +167,7 @@
            * Boolean: indicates if back button should be shown
            */
           backButton: {
-            type: Boolean,
-            value: false
+            type: Boolean
           },
           /**
            * String: label for back button
@@ -223,15 +212,13 @@
            * Boolean: indicating if the step is optional.
            */
           optional: {
-            type: Boolean,
-            value: false
+            type: Boolean
           },
           /**
           * Boolean: indicating if the step is saved.
           */
           save: {
             type: Boolean,
-            value: false,
             reflectToAttribute: true
           },
           /**
@@ -239,7 +226,6 @@
            */
           skipButton: {
             type: Boolean,
-            value: false,
             reflectToAttribute: true
           },
           /**
@@ -281,7 +267,7 @@
       }
       ////////////////// Public functions //////////////////
       /**
-      *
+      * Observer for active to set _activeStepIndex
       **/
       activeStepObserver() {
         this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
@@ -289,33 +275,28 @@
           this.parentElement._activeStepIndex = this.stepIndex;
       }
       /**
-      *
+      * fire step-invalid event
       **/
       fireInvalidStep() {
         this.dispatchEvent(new CustomEvent('step-invalid', { bubbles: true, composed: true }));
       }
       /**
-       * In this ready function, we will take care of oppening the step if it's the first one 
-       * And if the parameter is set for.
-       * Then we will call the register function, which is used to register a step into the stepper.
-       */
+      * Register step with parent
+      */
       ready() {
         super.ready();
         this.parentElement._registerStep(this);
       }
       /**
-       * This function is used to reinitialize all the parameter of this element 
-       * and the action buttons
-       */
+      * set back to initial state 
+      */
       reset() {
         this.save = false;
         this.active = false;
         this.$.stepButtons.reset();
 
-        if (this.parentElement.opened) {
-          if (this.stepIndex === 0)
-            this.active = true;
-        }
+        if (this.stepIndex === 0 && this.parentElement.opened)
+          this.active = true;
       }
       ///////////////// Private functions /////////////////
       /**
@@ -328,16 +309,10 @@
        * returns the correct icon name
        */
       _getIcon() {
-        let icon = "check";
-        if (this.locked) {
-          icon = "lock-outline";
-        } else if (this.editable) {
-          icon = "create"
-        }
-        return icon;
+        return this.locked ? "lock-outline" : this.editable ? "create" : "check";
       }
       /**
-       * This is a callback function called whent the step title is clicked.
+       * makes self active step
        */
       _setActive() {
         this.parentElement.closeAll();
