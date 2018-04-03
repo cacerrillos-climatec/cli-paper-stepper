@@ -109,22 +109,20 @@
         <div class="content">
           <slot></slot>
         </div>
-        <template is="dom-if" if="{{!parentElement.finish}}">
-          <template is="dom-if" if="{{save}}">
-            <paper-button data-event="update" on-tap="_fireEvent">{{updateLabel}}</paper-button>
-          </template>
-          <template is="dom-if" if="{{_showContinue(active)}}">
-            <paper-button data-event="continue" on-tap="_fireEvent">{{continueLabel}}</paper-button>
-          </template>
-          <template is="dom-if" if="{{skipButton}}">
-            <paper-button data-event="skip" on-tap="_fireEvent">{{skipLabel}}</paper-button>
-          </template>
-          <template is="dom-if" if="{{_showFinish(active)}}">
-            <paper-button data-event="finish" on-tap="_fireEvent">{{finishLabel}}</paper-button>
-          </template>
-          <template is="dom-if" if="{{backButton}}">
-            <paper-button data-event="back" on-tap="_fireEvent">{{backLabel}}</paper-button>
-          </template>
+        <template is="dom-if" if="{{save}}">
+          <paper-button data-event="update" on-tap="_fireEvent">{{updateLabel}}</paper-button>
+        </template>
+        <template is="dom-if" if="{{_showContinue(active)}}">
+          <paper-button data-event="continue" on-tap="_fireEvent">{{continueLabel}}</paper-button>
+        </template>
+        <template is="dom-if" if="{{skipButton}}">
+          <paper-button data-event="skip" on-tap="_fireEvent">{{skipLabel}}</paper-button>
+        </template>
+        <template is="dom-if" if="{{_showFinish(active)}}">
+          <paper-button data-event="finish" on-tap="_fireEvent">{{finishLabel}}</paper-button>
+        </template>
+        <template is="dom-if" if="{{backButton}}">
+          <paper-button data-event="back" on-tap="_fireEvent">{{backLabel}}</paper-button>
         </template>
       </iron-collapse>
     </div>
