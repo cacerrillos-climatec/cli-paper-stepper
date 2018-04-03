@@ -89,7 +89,7 @@
       }
     </style>
 
-    <paper-button class="toggleHead" on-tap="_toggle">
+    <paper-button class="toggleHead" on-tap="_setValidActive">
       <iron-icon id="iconBtn" icon="[[_getIcon(editable, save, locked)]]"></iron-icon>
       <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
       <div id="labelBtn">{{label}}
@@ -339,18 +339,24 @@
       /**
        * This is a callback function called whent the step title is clicked.
        */
-      _toggle() {
-        // if already active, locked or saved but not editable quit
-        if (this.active || this.locked || (this.save && !this.editable))
-          return;
-        // if parent is linear and step is ahead of active step or parent is finished quit
-        if ((this.parentElement.linear && this.stepIndex > this.parentElement._activeStepIndex) || this.parentElement.finish)
-          return;
-
+      _setActive() {
         this.parentElement.closeAll();
         this.active = true;
         this.$.stepButtons.setUpdate(this.save && this.editable);
         this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
+      }
+      /**
+      * checks if can be set to active, if passes sets to active
+      **/
+      _setValidActive() {
+        // if already active, locked or saved but not editable quit
+        if (this.active || this.locked || (this.save && !this.editable))
+          return;
+        // if parent is linear and step is ahead of active step or parent is finished quit
+        if ((this.parentElement.linear && this.stepIndex > this.parentElement._activeStepIndex && !this.save) || this.parentElement.finish)
+          return;
+
+        this._setActive();
       }
     }
 

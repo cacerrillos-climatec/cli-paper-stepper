@@ -99,14 +99,12 @@
           // Save current step
           currStep.save = true;
           // Calculate next step
-          let nextStep = this._calcNextStep();
+          let nextIndex = this._calcNextStep();
           // if there are 0 valid steps quit
-          if (!nextStep)
+          if (nextIndex === null)
             return
-
-          // Toggle active states
-          currStep.active = false;
-          nextStep.active = true;
+            
+          this._steps[nextIndex]._setActive();
         } else {
           currStep.fireInvalidStep();
         }
@@ -121,12 +119,10 @@
         // Calculate next step
         let prevStep = this._calcPrevStep();
         // if there are 0 valid steps quit
-        if (!prevStep)
+        if (prevStep === null)
           return
 
-        // Toggle active states
-        currStep.active = false;
-        prevStep.active = true;
+        this._steps[prevStep]._setActive();
       }
       /**
        * This function is used to reinitialize all the parameter of this element 
@@ -152,7 +148,7 @@
         if (i >= this._steps.length || i < 0)
           return;
 
-        this._steps[i]._toggle();
+        this._steps[i]._setActive();
       }
       /**
       * This function is used to skip the current active step.
@@ -174,34 +170,34 @@
       */
       _calcPrevStep() {
         let stepIndex = this._activeStepIndex == 0 ? this._steps.length : this._activeStepIndex - 1;
-        let prevStep;
+        let prevIndex = null;
         while (stepIndex != this._activeStepIndex) {
           let checkStep = this._steps[stepIndex];
           if (checkStep.locked || checkStep.save) {
             stepIndex = stepIndex == 0 ? this._steps.length : stepIndex - 1;
           } else {
-            prevStep = checkStep;
+            prevIndex = stepIndex;
             stepIndex = this._activeStepIndex;
           }
         }
-        return prevStep;
+        return prevIndex
       }
       /*
       * Calculates next valid step
       */
       _calcNextStep() {
         let stepIndex = (this._activeStepIndex + 1) % this._steps.length;
-        let nextStep;
+        let nextIndex = null;
         while (stepIndex != this._activeStepIndex) {
           let checkStep = this._steps[stepIndex];
           if (checkStep.locked || checkStep.save) {
             stepIndex = (stepIndex + 1) % this._steps.length;
           } else {
-            nextStep = checkStep;
+            nextIndex = stepIndex;
             stepIndex = this._activeStepIndex;
           }
         }
-        return nextStep;
+        return nextIndex
       }
       /**
        * This is a private callback function used to skip the current state and open the next one.
