@@ -278,7 +278,6 @@
       * Observer for active to set _activeStepIndex
       **/
       activeStepObserver() {
-        this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
         if (this.active)
           this.parentElement._activeStepIndex = this.stepIndex;
       }
