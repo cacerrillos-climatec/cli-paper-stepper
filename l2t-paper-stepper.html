@@ -106,7 +106,6 @@
 
           // Toggle active states
           currStep.active = false;
-          this._activeStepIndex = this._steps.indexOf(nextStep);
           nextStep.active = true;
         } else {
           currStep.fireInvalidStep();
@@ -127,7 +126,6 @@
 
         // Toggle active states
         currStep.active = false;
-        this._activeStepIndex = this._steps.indexOf(prevStep);
         prevStep.active = true;
       }
       /**
@@ -175,12 +173,12 @@
       * Calculates previous valid step
       */
       _calcPrevStep() {
-        let stepIndex = this._activeStepIndex = 0 ? this._steps.length : this._activeStepIndex - 1;
+        let stepIndex = this._activeStepIndex == 0 ? this._steps.length : this._activeStepIndex - 1;
         let prevStep;
         while (stepIndex != this._activeStepIndex) {
           let checkStep = this._steps[stepIndex];
           if (checkStep.locked || checkStep.save) {
-            stepIndex = stepIndex = 0 ? this._steps.length : stepIndex - 1;
+            stepIndex = stepIndex == 0 ? this._steps.length : stepIndex - 1;
           } else {
             prevStep = checkStep;
             stepIndex = this._activeStepIndex;
