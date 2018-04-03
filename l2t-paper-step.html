@@ -109,20 +109,22 @@
         <div class="content">
           <slot></slot>
         </div>
-        <template is="dom-if" if="{{save}}">
-          <paper-button data-event="update" on-tap="_fireEvent">{{updateLabel}}</paper-button>
-        </template>
-        <template is="dom-if" if="{{_showContinue(active)}}">
-          <paper-button data-event="continue" on-tap="_fireEvent">{{continueLabel}}</paper-button>
-        </template>
-        <template is="dom-if" if="{{skipButton}}">
-          <paper-button data-event="skip" on-tap="_fireEvent">{{skipLabel}}</paper-button>
-        </template>
-        <template is="dom-if" if="{{_showFinish(active)}}">
-          <paper-button data-event="finish" on-tap="_fireEvent">{{finishLabel}}</paper-button>
-        </template>
-        <template is="dom-if" if="{{backButton}}">
-          <paper-button data-event="back" on-tap="_fireEvent">{{backLabel}}</paper-button>
+        <template is="dom-if" if="{{!parentElement.finish}}">
+          <template is="dom-if" if="{{save}}">
+            <paper-button data-event="update" on-tap="_fireEvent">{{updateLabel}}</paper-button>
+          </template>
+          <template is="dom-if" if="{{_showContinue(active)}}">
+            <paper-button data-event="continue" on-tap="_fireEvent">{{continueLabel}}</paper-button>
+          </template>
+          <template is="dom-if" if="{{skipButton}}">
+            <paper-button data-event="skip" on-tap="_fireEvent">{{skipLabel}}</paper-button>
+          </template>
+          <template is="dom-if" if="{{_showFinish(active)}}">
+            <paper-button data-event="finish" on-tap="_fireEvent">{{finishLabel}}</paper-button>
+          </template>
+          <template is="dom-if" if="{{backButton}}">
+            <paper-button data-event="back" on-tap="_fireEvent">{{backLabel}}</paper-button>
+          </template>
         </template>
       </iron-collapse>
     </div>
@@ -138,17 +140,11 @@
      * Example:
      * ```html
      * <l2t-paper-step label="Information" skip-button optional>
-     * 	<paper-input always-float-label label="Surname"></paper-input>
-     * 	<paper-input label="username">
-     * 		<iron-icon icon="mail" slot="prefix"></iron-icon>
-     * 		<div slot="suffix">@email.com</div>
-     * 	</paper-input>
+     * ...
      * </l2t-paper-step>
      * ```
      * 
      * ### Styling The following custom properties and mixins are available for styling: 
-     * 
-     * For the `--step-badge-width` and the `--step-badge-height`, there is a border (6px) added to the badge that could not be changed.
      * 
      * Custom property | Description | Default
      * ----------------|-------------|----------
@@ -358,9 +354,15 @@
 
         this._setActive();
       }
+      /**
+      * returns true if continue button should be shown
+      **/
       _showContinue() {
         return !(this.parentElement.isFinalStep() || this.save);
       }
+      /**
+      * returns true if finish button should be shown
+      **/
       _showFinish() {
         return this.parentElement.isFinalStep();
       }
