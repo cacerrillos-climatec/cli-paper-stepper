@@ -249,7 +249,7 @@
             type: Boolean,
             value: false,
             reflectToAttribute: true,
-            observer: 'changeActiveStep'
+            observer: 'activeStepObserver'
           },
           /**
            * The continue button text value
@@ -367,22 +367,21 @@
        * This function is used to reinitialize all the parameter of this element 
        * and the action buttons
        */
-      reset(openFirstStep) {
+      reset() {
         this.removeAttribute("save");
         this.active = false;
         this.$.stepButtons.reset();
         this.updateStyles();
 
-        if (openFirstStep) {
+        if (this.parentElement.opened) {
           if (this.stepIndex === 0)
             this.active = true;
         }
       }
 
-      changeActiveStep(active) {
+      activeStepObserver() {
         this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
-
-        if (active)
+        if (this.active)
           this.parentElement.activeStepIndex = this.stepIndex;
       }
 
