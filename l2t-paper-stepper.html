@@ -94,7 +94,7 @@
       /**
       *
       */
-      isFinished() {
+      isFinalStep() {
         let count = 0;
         for (let step of this._steps) {
           if (!step.save && !step.locked && !step.active)
@@ -152,7 +152,7 @@
        */
       reset() {
         this._setIsResetting(true);
-        this._setFinish(false);
+        this.finish = false;
         this.activeStep = undefined;
         this.nextStep = undefined;
         for (var i = 0; i < this._steps.length; i++) {
@@ -245,7 +245,7 @@
         let currStep = this._steps[this.activeStepIndex];
         if (currStep.valid) {
           this.nextStep();
-          this._setFinish(true);
+          this.finish = true;
           this.dispatchEvent(new CustomEvent('stepper-finished', {
             bubbles: true,
             composed: true

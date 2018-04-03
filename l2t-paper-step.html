@@ -341,7 +341,7 @@
         this.parentElement.closeAll();
         this.active = true;
         this.$.stepButtons.setUpdate(this.save && this.editable);
-        this.$.stepButtons.setFinish(this.parentElement.isFinished())
+        this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
       }
 
       _badgeNum(i) {
@@ -380,7 +380,7 @@
       }
 
       changeActiveStep(active) {
-        this.$.stepButtons.setFinish(this.parentElement.isFinished());
+        this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
 
         if (active)
           this.parentElement.activeStepIndex = this.stepIndex;
