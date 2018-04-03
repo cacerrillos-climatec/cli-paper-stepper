@@ -103,7 +103,7 @@
           // if there are 0 valid steps quit
           if (nextIndex === null)
             return
-            
+
           this._steps[nextIndex]._setActive();
         } else {
           currStep.fireInvalidStep();
@@ -224,18 +224,14 @@
       _registerStep(el) {
         this._steps.push(el);
         el.stepIndex = this._steps.length - 1;
-        if (el.stepIndex == 0 && this.opened)
-          el.active = true
+        if (this.opened)
+          this._steps[0].active = true
         el.addEventListener("last-step-closed", this.nextStep.bind(this));
         el.addEventListener("continue-clicked", this.nextStep.bind(this));
         el.addEventListener("finish-clicked", this._finishStep.bind(this));
         el.addEventListener("skip-clicked", this.skipStep.bind(this));
         el.addEventListener("back-clicked", this.prevStep.bind(this));
         el.addEventListener("update-clicked", this.nextStep.bind(this));
-
-        for (let step of this._steps) {
-          step.activeStepObserver();
-        }
       }
     }
 

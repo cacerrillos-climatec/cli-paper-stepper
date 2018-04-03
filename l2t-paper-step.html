@@ -95,7 +95,7 @@
     </paper-button>
     <div class="layout">
       <iron-collapse opened="{{active}}">
-        <slot></slot>
+        <div class="content"><slot></slot></div>
         <template is="dom-if" if="{{save}}">
           <paper-button data-event="update" on-tap="_fireEvent">{{updateLabel}}</paper-button>
         </template>
