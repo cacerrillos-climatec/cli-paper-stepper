@@ -324,10 +324,9 @@
        * and the action buttons
        */
       reset() {
-        this.removeAttribute("save");
+        this.save = false;
         this.active = false;
         this.$.stepButtons.reset();
-        this.updateStyles();
 
         if (this.parentElement.opened) {
           if (this.stepIndex === 0)
@@ -336,15 +335,13 @@
       }
       ///////////////// Private functions /////////////////
       /**
-      *
+      * Returns the badge number
       **/
       _badgeNum(i) {
         return i + 1;
       }
       /**
-       * This function is used to get the good icon to display into the badge,
-       * accordign to the 'editable' property.
-       * @private
+       * saves the icon name into _icon
        */
       _getIcon() {
         let icon = "check";
@@ -357,9 +354,6 @@
       }
       /**
        * This is a callback function called whent the step title is clicked.
-       * This will close all the open steps before opening the one selected, if the criteria are respected.
-       * Moreover, if we are in a case of a modification, we will display the update button.
-       * @private
        */
       _toggle() {
         // if already active, locked or saved but not editable quit
@@ -371,7 +365,6 @@
 
         this.parentElement.closeAll();
         this.active = true;
-        this.parentElement._activeStepIndex = this.stepIndex;
         this.$.stepButtons.setUpdate(this.save && this.editable);
         this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
       }
