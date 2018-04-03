@@ -57,16 +57,21 @@
         display: none;
       }
 
+      :host([active]) span.badgeNumber {
+        background-color: var(--step-active-badge-color, var(--primary-color))
+      }
+
       :host([save]) iron-icon#iconBtn {
-        display: block;
-        border-color: var(--step-save-badge-color, var(--primary-color));
         background-color: var(--step-save-badge-color, var(--primary-color))
       }
 
       :host([locked]) iron-icon#iconBtn {
-        display: block;
-        border-color: var(--step-locked-badge-color, var(--disabled-text-color));
         background-color: var(--step-locked-badge-color, var(--disabled-text-color))
+      }
+
+      :host([locked]) iron-icon#iconBtn,
+      :host([save])iron-icon#iconBtn {
+        display: block
       }
 
       :host([locked]) span.badgeNumber,
