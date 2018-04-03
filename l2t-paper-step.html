@@ -177,65 +177,10 @@
 
       static get properties() {
         return {
+          ///////////////// Public properties /////////////////
           /**
-           * This is the label of the step
-           */
-          label: {
-            type: String
-          },
-          /**
-           * This stores a boolean value
-           * indicating if the step is locked.
-           */
-          locked: {
-            type: Boolean,
-            observer: '_getIcon'
-          },
-          /**
-           * This stores a boolean value
-           * indicating if the step is editable.
-           */
-          editable: {
-            type: Boolean,
-            observer: '_getIcon'
-          },
-          /**
-          *
-          **/
-          valid: {
-            type: Boolean,
-            value: true
-          },
-          /**
-           * This stores a string containing
-           * the correct icon to be used.
-           */
-          _icon: {
-            type: String,
-            value: 'check'
-          },
-          /**
-          * Property used to indicate if the step is saved.
-          * True if it's saved, false otherwise.
+          * Boolean: indicating if the step is currently active
           */
-          save: {
-            type: Boolean,
-            value: false,
-            reflectToAttribute: true
-          },
-          /**
-           * Property used to indicate if the step is optional.
-           * True if it's optional, false otherwise.
-           */
-          optional: {
-            type: Boolean,
-            value: false
-          },
-          /**
-           * Property used to indicate if the step is active.
-           * If the step is active that means it will be open, and it's the current step we are focused on.
-           * True if it's active, false otherwise.
-           */
           active: {
             type: Boolean,
             value: false,
@@ -243,40 +188,70 @@
             observer: 'activeStepObserver'
           },
           /**
-           * The continue button text value
-           * 'Continue' by default
+           * Boolean: indicates if back button should be shown
+           */
+          backButton: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * String: label for back button
+           */
+          backLabel: {
+            type: String,
+            value: "Back"
+          },
+          /**
+           * String: label for continue button
            */
           continueLabel: {
             type: String,
             value: "Continue"
           },
           /**
-           * The finish button text value
-           * 'Finish' by default
+           * Boolean: indicating if the step is editable.
+           */
+          editable: {
+            type: Boolean,
+            observer: '_getIcon'
+          },
+          /**
+           * String: label for finish button
            */
           finishLabel: {
             type: String,
             value: "Finish"
           },
           /**
-           * The update button text value
-           * 'Update' by default
+           * String: label for step
            */
-          updateLabel: {
-            type: String,
-            value: "Update"
+          label: {
+            type: String
           },
           /**
-           * The skip button text value
-           * 'Skip' by default
+           * Boolean: indicating if the step is locked.
            */
-          skipLabel: {
-            type: String,
-            value: "Skip"
+          locked: {
+            type: Boolean,
+            observer: '_getIcon'
           },
           /**
-           * True to display the skip button, false otherwise.
-           * If the step is linear, the skip button will do nothing, except if the property Optional is true.
+           * Boolean: indicating if the step is optional.
+           */
+          optional: {
+            type: Boolean,
+            value: false
+          },
+          /**
+          * Boolean: indicating if the step is saved.
+          */
+          save: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
+          /**
+           * Boolean: indicates if skip button should be shown
            */
           skipButton: {
             type: Boolean,
@@ -284,27 +259,57 @@
             reflectToAttribute: true
           },
           /**
-           * The back button text value
-           * 'Back' by default
+           * String: label for skip button
            */
-          backLabel: {
+          skipLabel: {
             type: String,
-            value: "Back"
+            value: "Skip"
           },
           /**
-           * True to display the back button, false otherwise.
-           */
-          backButton: {
-            type: Boolean,
-            value: false
-          },
-          /**
-          *
+          * Number: stores own index in _steps array
           **/
-          stepIndex: Number
+          stepIndex: {
+            type: Number
+          },
+          /**
+           * String: label for update button
+           */
+          updateLabel: {
+            type: String,
+            value: "Update"
+          },
+          /**
+          * Boolean: indicating if the step is valid.
+          **/
+          valid: {
+            type: Boolean,
+            value: true
+          },
+          //////////////// Private properties ////////////////
+          /**
+           * String: name of icon to be used.
+           */
+          _icon: {
+            type: String,
+            value: 'check'
+          }
         };
       }
-
+      ////////////////// Public functions //////////////////
+      /**
+      *
+      **/
+      activeStepObserver() {
+        this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
+        if (this.active)
+          this.parentElement._activeStepIndex = this.stepIndex;
+      }
+      /**
+      *
+      **/
+      fireInvalidStep() {
+        this.dispatchEvent(new CustomEvent('step-invalid', { bubbles: true, composed: true }));
+      }
       /**
        * In this ready function, we will take care of oppening the step if it's the first one 
        * And if the parameter is set for.
@@ -314,46 +319,6 @@
         super.ready();
         this.parentElement._registerStep(this);
       }
-
-      /**
-       * This is a callback function called whent the step title is clicked.
-       * This will close all the open steps before opening the one selected, if the criteria are respected.
-       * Moreover, if we are in a case of a modification, we will display the update button.
-       * @private
-       */
-      _toggle() {
-        // if already active, locked or saved but not editable quit
-        if (this.active || this.locked || (this.save && !this.editable))
-          return;
-        // if parent is linear and step is ahead of active step or parent is finished quit
-        if ((this.parentElement.linear && this.stepIndex > this.parentElement.activeStepIndex) || this.parentElement.finish)
-          return;
-        
-        this.parentElement.closeAll();
-        this.active = true;
-        this.$.stepButtons.setUpdate(this.save && this.editable);
-        this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
-      }
-
-      _badgeNum(i) {
-        return i + 1;
-      }
-
-      /**
-       * This function is used to get the good icon to display into the badge,
-       * accordign to the 'editable' property.
-       * @private
-       */
-      _getIcon() {
-        let icon = "check";
-        if (this.locked) {
-          icon = "lock-outline";
-        } else if (this.editable) {
-          icon = "create"
-        }
-        this._icon = icon;
-      }
-
       /**
        * This function is used to reinitialize all the parameter of this element 
        * and the action buttons
@@ -369,18 +334,46 @@
             this.active = true;
         }
       }
-
-      activeStepObserver() {
-        this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
-        if (this.active)
-          this.parentElement.activeStepIndex = this.stepIndex;
+      ///////////////// Private functions /////////////////
+      /**
+      *
+      **/
+      _badgeNum(i) {
+        return i + 1;
       }
+      /**
+       * This function is used to get the good icon to display into the badge,
+       * accordign to the 'editable' property.
+       * @private
+       */
+      _getIcon() {
+        let icon = "check";
+        if (this.locked) {
+          icon = "lock-outline";
+        } else if (this.editable) {
+          icon = "create"
+        }
+        this._icon = icon;
+      }
+      /**
+       * This is a callback function called whent the step title is clicked.
+       * This will close all the open steps before opening the one selected, if the criteria are respected.
+       * Moreover, if we are in a case of a modification, we will display the update button.
+       * @private
+       */
+      _toggle() {
+        // if already active, locked or saved but not editable quit
+        if (this.active || this.locked || (this.save && !this.editable))
+          return;
+        // if parent is linear and step is ahead of active step or parent is finished quit
+        if ((this.parentElement.linear && this.stepIndex > this.parentElement._activeStepIndex) || this.parentElement.finish)
+          return;
 
-      fireInvalidStep() {
-        this.dispatchEvent(new CustomEvent('step-invalid', {
-          bubbles: true,
-          composed: true
-        }));
+        this.parentElement.closeAll();
+        this.active = true;
+        this.parentElement._activeStepIndex = this.stepIndex;
+        this.$.stepButtons.setUpdate(this.save && this.editable);
+        this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
       }
     }
 
