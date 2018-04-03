@@ -8,13 +8,15 @@
 <dom-module id="l2t-paper-step">
   <template>
     <style>
-      div.layout {
+      .layout {
         border-left: 1px solid var(--step-connector-line-color, var(--divider-color));
         margin-left: calc((var(--step-badge-width, 30px)/2) + 9.12px);
         padding: 10px 31.12px;
       }
 
-      paper-button {
+      .toggleHead {
+        display: flex;
+        justify-content: flex-start;
         margin: 0;
       }
 
@@ -87,7 +89,7 @@
       }
     </style>
 
-    <paper-button on-tap="_toggle">
+    <paper-button class="toggleHead" on-tap="_toggle">
       <iron-icon id="iconBtn" icon="[[_icon]]"></iron-icon>
       <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
       <div id="labelBtn">{{label}}
