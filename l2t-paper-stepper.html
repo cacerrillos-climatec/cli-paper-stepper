@@ -154,15 +154,12 @@
       * This function is used to skip the current active step.
       */
       skipStep() {
-        if ((this.linear && this._steps[this._activeStepIndex].optional) || !this.linear) {
-          if (this.linear)
-            this._steps[this._activeStepIndex].save = true;
-          this._steps[this._activeStepIndex].toggleStep();
-          if (this.nextStep !== null)
-            this.nextStep.toggleStep();
-        } else {
-          console.log("can't skip you are in linear mode.");
-        }
+        let nextIndex = this._calcNextStep();
+        // if there are 0 valid steps quit
+        if (nextIndex === null)
+          return
+
+        this._steps[nextIndex]._setActive();
       }
       ///////////////// Private functions /////////////////
       /*
