@@ -38,7 +38,7 @@
       }
 
       :host([locked]) div#labelBtn {
-        color: var(--step-locked-label-color, var(--step-label-color));
+        color: var(--step-locked-label-color, var(--disabled-text-color));
       }
 
       :host([active]) div#labelBtn,
@@ -50,7 +50,6 @@
       div#labelBtn {
         align-self: center;
         padding: 0 16px;
-        font-size: 14sp;
         color: var(--step-label-color, #E0E0E0)
       }
 
