@@ -90,7 +90,7 @@
     </style>
 
     <paper-button class="toggleHead" on-tap="_toggle">
-      <iron-icon id="iconBtn" icon="[[_icon]]"></iron-icon>
+      <iron-icon id="iconBtn" icon="[[_getIcon(editable, save, locked)]]"></iron-icon>
       <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
       <div id="labelBtn">{{label}}
         <template is="dom-if" if="{{optional}}">
@@ -198,8 +198,7 @@
            * Boolean: indicating if the step is editable.
            */
           editable: {
-            type: Boolean,
-            observer: '_getIcon'
+            type: Boolean
           },
           /**
            * String: label for finish button
@@ -218,8 +217,7 @@
            * Boolean: indicating if the step is locked.
            */
           locked: {
-            type: Boolean,
-            observer: '_getIcon'
+            type: Boolean
           },
           /**
            * Boolean: indicating if the step is optional.
@@ -327,7 +325,7 @@
         return i + 1;
       }
       /**
-       * saves the icon name into _icon
+       * returns the correct icon name
        */
       _getIcon() {
         let icon = "check";
@@ -336,7 +334,7 @@
         } else if (this.editable) {
           icon = "create"
         }
-        this._icon = icon;
+        return icon;
       }
       /**
        * This is a callback function called whent the step title is clicked.
