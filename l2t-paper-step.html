@@ -83,17 +83,13 @@
         background-color: var(--step-badge-color, var(--secondary-text-color));
         color: var(--step-badge-content-color, var(--primary-background-color))
       }
-
-      l2t-paper-step-action-buttons paper-button {
-        @apply --button-style;
-      }
     </style>
 
     <paper-button class="toggleHdr" on-tap="_setValidActive">
       <iron-icon class="iconBtn" icon="[[_getIcon(editable, save, locked)]]"></iron-icon>
       <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
       <div class="labelBtn">{{label}}
-        <div hidden$="[[!optional]]" class="subtitle">OPTIONAL</div>
+        <div hidden$="[[_not(optional)]]" class="subtitle">OPTIONAL</div>
       </div>
     </paper-button>
     <div class="layout">
@@ -308,6 +304,12 @@
        */
       _getIcon() {
         return this.locked ? "lock-outline" : this.editable ? "create" : "check";
+      }
+      /**
+      * returns inverse boolean of parameter
+      */
+      _not(bool) {
+        return !bool
       }
       /**
        * makes self active step
