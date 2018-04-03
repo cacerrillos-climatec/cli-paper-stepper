@@ -109,7 +109,7 @@
       * Then it will open the next step, if there is one.
       */
       nextStep() {
-        let currStep = this._steps[this.activeStepIndex];
+        let currStep = this._steps[this._activeStepIndex];
         // Check valid is true
         if (currStep.valid) {
           // Save current step
@@ -122,7 +122,7 @@
 
           // Toggle active states
           currStep.active = false;
-          this.activeStepIndex = this._steps.indexOf(nextStep);
+          this._activeStepIndex = this._steps.indexOf(nextStep);
           nextStep.active = true;
         } else {
           currStep.fireInvalidStep();
@@ -134,7 +134,7 @@
       * Then it will open the previous step, if there is one.
       */
       prevStep() {
-        let currStep = this._steps[this.activeStepIndex];
+        let currStep = this._steps[this._activeStepIndex];
         // Calculate next step
         let prevStep = this._calcPrevStep();
         // if there are 0 valid steps quit
@@ -143,7 +143,7 @@
 
         // Toggle active states
         currStep.active = false;
-        this.activeStepIndex = this._steps.indexOf(prevStep);
+        this._activeStepIndex = this._steps.indexOf(prevStep);
         prevStep.active = true;
       }
       /**
@@ -174,7 +174,7 @@
 
         let newStep = this._steps[i];
         // If the new step is already active why bother
-        if (this.activeStepIndex == i && newStep.active)
+        if (this._activeStepIndex == i && newStep.active)
           return;
         // Catch locked or backtracking
         if ((newStep.save && !newStep.editable) || newStep.locked) {
@@ -184,17 +184,17 @@
         // Close all open panes
         this.closeAll();
         // Set new step as active
-        this.activeStepIndex = i;
+        this._activeStepIndex = i;
         newStep.active = true;
       }
       /**
       * This function is used to skip the current active step.
       */
       skipStep() {
-        if ((this.linear && this._steps[this.activeStepIndex].optional) || !this.linear) {
+        if ((this.linear && this._steps[this._activeStepIndex].optional) || !this.linear) {
           if (this.linear)
-            this._steps[this.activeStepIndex].save = true;
-          this._steps[this.activeStepIndex].toggleStep();
+            this._steps[this._activeStepIndex].save = true;
+          this._steps[this._activeStepIndex].toggleStep();
           if (this.nextStep !== null)
             this.nextStep.toggleStep();
         } else
@@ -205,15 +205,15 @@
       *
       */
       _calcPrevStep() {
-        let stepIndex = this.activeStepIndex = 0 ? this._steps.length : this.activeStepIndex - 1;
+        let stepIndex = this._activeStepIndex = 0 ? this._steps.length : this._activeStepIndex - 1;
         let prevStep;
-        while (stepIndex != this.activeStepIndex) {
+        while (stepIndex != this._activeStepIndex) {
           let checkStep = this._steps[stepIndex];
           if (checkStep.locked || checkStep.save) {
             stepIndex = stepIndex = 0 ? this._steps.length : stepIndex - 1;
           } else {
             prevStep = checkStep;
-            stepIndex = this.activeStepIndex;
+            stepIndex = this._activeStepIndex;
           }
         }
 
@@ -223,15 +223,15 @@
       *
       */
       _calcNextStep() {
-        let stepIndex = (this.activeStepIndex + 1) % this._steps.length;
+        let stepIndex = (this._activeStepIndex + 1) % this._steps.length;
         let nextStep;
-        while (stepIndex != this.activeStepIndex) {
+        while (stepIndex != this._activeStepIndex) {
           let checkStep = this._steps[stepIndex];
           if (checkStep.locked || checkStep.save) {
             stepIndex = (stepIndex + 1) % this._steps.length;
           } else {
             nextStep = checkStep;
-            stepIndex = this.activeStepIndex;
+            stepIndex = this._activeStepIndex;
           }
         }
 
@@ -242,8 +242,9 @@
        * This can be done only if we are in linear mode.
        */
       _finishStep(e) {
-        let currStep = this._steps[this.activeStepIndex];
+        let currStep = this._steps[this._activeStepIndex];
         if (currStep.valid) {
+          currStep.save = true
           this.closeAll();
           this.finish = true;
           this.dispatchEvent(new CustomEvent('stepper-finished', {
