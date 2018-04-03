@@ -346,8 +346,7 @@
         this._setActive();
       }
       _showContinue() {
-        if (this.parentElement.isFinalStep() || this.save)
-          return false;
+          return !(this.parentElement.isFinalStep() || this.save);
       }
       _showFinish() {
         return this.parentElement.isFinalStep();

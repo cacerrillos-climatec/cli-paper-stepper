@@ -225,7 +225,7 @@
         this._steps.push(el);
         el.stepIndex = this._steps.length - 1;
         if (this.opened)
-          this._steps[0].active = true
+          this._steps[0]._setActive();
         el.addEventListener("last-step-closed", this.nextStep.bind(this));
         el.addEventListener("continue-clicked", this.nextStep.bind(this));
         el.addEventListener("finish-clicked", this._finishStep.bind(this));
