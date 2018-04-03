@@ -17,14 +17,7 @@
   <script>
     /**
      * `<l2t-paper-stepper>` is an element used to display progress through a sequence of logical and numbered steps.
-     * This element need to be used with the `l2t-paper-step` element.
-     * You can add the number of step you want inside your stepper.
-     * You can set multiple attribute to the stepper : 
-     * - linear : this require users to complete one step in order to move on to the next.
-     *     If linear is false, it allow users to enter a multi-step flow at any point.
-     * - Mobile : TODO - This is used when there is multitude of step on a mobile view we will compact it.
-     * - Horizontal (TODO): True if you want to use the stepper horizontaly. Otherwise (default) it's vertical.
-     * - opened : If true, the first step will be open after load time.
+     * This element needs to be used with the `l2t-paper-step` element.
      *     
      * Example:
      * ```html
@@ -35,19 +28,14 @@
      * </l2t-paper-stepper>
      * ```
      * 
-     * @polymer
-     * @customElement
      * @demo demo/index.html
      * @element l2t-paper-stepper
      */
     class L2tPaperStepper extends Polymer.Element {
 
       /**
-       * Fired when the stepper is finished and all the steps are saved.
-       *
-       * @event stepper-finished
-       * @param {Object} detail empty
-       */
+      * Fired when the stepper is finished and all the steps are saved.
+      */
 
       static get is() {
         return 'l2t-paper-stepper';
@@ -55,108 +43,70 @@
 
       static get properties() {
         return {
+          ///////////////// Public properties /////////////////
           /**
-           * Contain all the steps registered.
-           */
-          _steps: {
-            type: Array,
-            value: function () {
-              return [];
-            }
+          * Boolean: Used to indicate if the stepper is finished or not.
+          */
+          finish: {
+            type: Boolean,
+            value: false
           },
-
-          _activeStepIndex: {
-            type: Number,
-            value: 0
-          },
-
           /**
-          * This property is used to indicate if the stepper require users to complete one step in order to move on to the next.
-          * If linear is false, it allow users to enter a multi-step flow at any point.
+          * Boolean: Used to indicate if the stepper require users to complete one step in order to move on to the next.
           */
           linear: {
             type: Boolean,
             value: true
           },
-
           /**
-           * If true, after the stepper is loaded, if will open the first step.
-           */
+          * Boolean: If true, after the stepper is loaded, first step be opened.
+          */
           opened: {
             type: Boolean,
             value: false
           },
-
+          //////////////// Private properties ////////////////
           /**
-           * This is the active step element.
-           * If the property is equal to : 
-           *  - null : That means there is no step active
-           *  - undefined : That means no step has been opened yet.
-           */
-          activeStep: {
-            type: Object
+          * Number: Contains the index of the active step
+          */
+          _activeStepIndex: {
+            type: Number,
+            value: 0
           },
-
           /**
-           * Property used to indicate if the stepper is finished or not.
-           * @readonly
-           */
-          finish: {
-            type: Boolean,
-            value: false,
-            readOnly: true
-          },
-        };
-      }
-
-      /**
-       * This function is used by the `l2t-paper-step` to register into the `l2t-paper-stepper`.
-       * Then multiple event fired from the stepper can be handled :
-       *  - last-step-closed 
-       *  - continue-clicked : call the __nextStep() function. 
-       *  - finish-clicked : call the __nextStep() function.
-       *  - skip-clicked : call the __skipStep() function.
-       *  - update-clicked : call the __nextStep() function.
-       * 
-       *  All elements registered are added into the _steps property.
-       */
-      _registerStep(element) {
-        this._steps.push(element);
-        element.stepIndex = this._steps.length - 1;
-        if(element.stepIndex == 0 && this.opened)
-          element.active = true
-        // element.addEventListener("last-step-closed", this._validStepper.bind(this));
-        element.addEventListener("continue-clicked", this.nextStep.bind(this));
-        element.addEventListener("finish-clicked", this.__finishStep.bind(this));
-        element.addEventListener("skip-clicked", this.skipStep.bind(this));
-        element.addEventListener("back-clicked", this.openPreviousStep.bind(this));
-        element.addEventListener("update-clicked", this.nextStep.bind(this));
-      }
-
-      /**
-       * This is a private callback function used to skip the current state and open the next one.
-       * This can be done only if we are in linear mode.
-       * @private
-       */
-      __finishStep(e) {
-        let currStep = this._steps[this.activeStepIndex];
-        if (currStep.valid) {
-          this.nextStep();
-          this._setFinish(true);
-          this.dispatchEvent(new CustomEvent('stepper-finished', {
-            bubbles: true,
-            composed: true
-          }));
-        } else {
-          currStep.fireInvalidStep();
+          * Array: Contains all the steps registered.
+          */
+          _steps: {
+            type: Array
+          }
         }
       }
-
+      ////////////////// Public functions //////////////////
       /**
-       * This function is used to open the next step.
-       * It will save and close the current active step.
-       * Then it will open the next step if there is one.
-       */
+      * This function is used to close all the steps.
+      */
+      closeAll() {
+        for (let step of this._steps) {
+          step.active = false;
+        }
+      }
+      /**
+      *
+      */
+      isFinished() {
+        let count = 0;
+        for (let step of this._steps) {
+          if (!step.save && !step.locked && !step.active)
+            count++
+        }
+        this.finish = !count;
+        return this.finish;
+      }
+      /**
+      * This function is used to open the next step.
+      * It will save and close the current active step.
+      * Then it will open the next step, if there is one.
+      */
       nextStep() {
         let currStep = this._steps[this.activeStepIndex];
         // Check valid is true
@@ -177,7 +127,100 @@
           currStep.fireInvalidStep();
         }
       }
+      /**
+      * This function is used to open the previous step.
+      * It will close, but not save, the current active step.
+      * Then it will open the previous step, if there is one.
+      */
+      prevStep() {
+        let currStep = this._steps[this.activeStepIndex];
+        // Calculate next step
+        let prevStep = this._calcPrevStep();
+        // if there are 0 valid steps quit
+        if (!prevStep)
+          return
 
+        // Toggle active states
+        currStep.active = false;
+        this.activeStepIndex = this._steps.indexOf(prevStep);
+        prevStep.active = true;
+      }
+      /**
+       * This function is used to reinitialize all the parameter of this element 
+       * and from all the steppers.
+       */
+      reset() {
+        this._setIsResetting(true);
+        this._setFinish(false);
+        this.activeStep = undefined;
+        this.nextStep = undefined;
+        for (var i = 0; i < this._steps.length; i++) {
+          var step = this._steps[i];
+          step.reset(this.opened);
+        }
+        this._setIsResetting(false);
+      }
+      /**
+      * This function is used to set the active step by number/index.
+      * @param {Number} i is an index.
+      */
+      setActiveByIndex(i) {
+        // Catch out of range Indexes
+        if (i >= this._steps.length || i < 0) {
+          console.warn("Index: " + i + " is out of range");
+          return;
+        }
+
+        let newStep = this._steps[i];
+        // If the new step is already active why bother
+        if (this.activeStepIndex == i && newStep.active)
+          return;
+        // Catch locked or backtracking
+        if ((newStep.save && !newStep.editable) || newStep.locked) {
+          console.warn("Index: " + i + " is locked or is not marked as editable");
+          return;
+        }
+        // Close all open panes
+        this.closeAll();
+        // Set new step as active
+        this.activeStepIndex = i;
+        newStep.active = true;
+      }
+      /**
+      * This function is used to skip the current active step.
+      */
+      skipStep() {
+        if ((this.linear && this._steps[this.activeStepIndex].optional) || !this.linear) {
+          if (this.linear)
+            this._steps[this.activeStepIndex].save = true;
+          this._steps[this.activeStepIndex].toggleStep();
+          if (this.nextStep !== null)
+            this.nextStep.toggleStep();
+        } else
+          console.log("can't skip you are in linear mode.");
+      }
+      ///////////////// Private functions /////////////////
+      /*
+      *
+      */
+      _calcPrevStep() {
+        let stepIndex = this.activeStepIndex = 0 ? this._steps.length : this.activeStepIndex - 1;
+        let prevStep;
+        while (stepIndex != this.activeStepIndex) {
+          let checkStep = this._steps[stepIndex];
+          if (checkStep.locked || checkStep.save) {
+            stepIndex = stepIndex = 0 ? this._steps.length : stepIndex - 1;
+          } else {
+            prevStep = checkStep;
+            stepIndex = this.activeStepIndex;
+          }
+        }
+
+        return prevStep;
+      }
+      /*
+      *
+      */
       _calcNextStep() {
         let stepIndex = (this.activeStepIndex + 1) % this._steps.length;
         let nextStep;
@@ -193,58 +236,26 @@
 
         return nextStep;
       }
-
-      isFinished() {
-        let count = 0;
-        for(let step of this._steps){
-          if (!step.save && !step.locked && !step.active)
-            count++
-        }
-        return !count;
-      }
-
       /**
-       * This function is used to open the next step.
-       * It will save and close the current active step.
-       * Then it will open the next step if there is one.
+       * This is a private callback function used to skip the current state and open the next one.
+       * This can be done only if we are in linear mode.
        */
-      openPreviousStep() {
-        this._steps[this.activeStepIndex].toggleStep();
-        if (this.previousStep !== null)
-          this.previousStep.toggleStep();
-      }
-
-      /**
-       * This function is used to skip the current active step.
-       * This function can work only if we are not in linear mode.
-       * TODO : allow the 
-       */
-      skipStep() {
-        if ((this.linear && this._steps[this.activeStepIndex].optional) || !this.linear) {
-          if (this.linear)
-          this._steps[this.activeStepIndex].save = true;
-          this._steps[this.activeStepIndex].toggleStep();
-          if (this.nextStep !== null)
-            this.nextStep.toggleStep();
-        } else
-          console.log("can't skip you are in linear mode.");
-      }
-
-      /**
-       * This function is used to close all the steps.
-       */
-      closeAll() {
-        for (let step of this._steps) {
-          step.active = false;
+      _finishStep(e) {
+        let currStep = this._steps[this.activeStepIndex];
+        if (currStep.valid) {
+          this.nextStep();
+          this._setFinish(true);
+          this.dispatchEvent(new CustomEvent('stepper-finished', {
+            bubbles: true,
+            composed: true
+          }));
+        } else {
+          currStep.fireInvalidStep();
         }
       }
-
       /**
        * This function is used to check all the previous step the the active one.
        * If there is a step that is not saved or editabled, we returned it.
-       * 
-       * @return {Object} The stepper to open if there is or null.
-       * @private
        */
       _getPreviousStep() {
         for (var i = this.activeStep._badgeNumber - 1; i == 0; i--) {
@@ -257,54 +268,21 @@
 
         return null;
       }
-
       /**
-       * This function is used to set the active step by number/index.
-       * @param {Number} i is an index.
+       * This function is used by the `l2t-paper-step` to register into the `l2t-paper-stepper`.
+       * All elements registered are added into the _steps property.
        */
-      setActiveByIndex(i) {
-        // Catch out of range Indexes
-        if (i >= this._steps.length || i < 0) {
-          console.warn("Index: " + i + " is out of range");
-          return;
-        }
-
-        let newStep = this._steps[i];
-
-        // If the new step is already active why bother
-        if (this.activeStepIndex == i && newStep.active)
-          return;
-        // Catch locked or backtracking
-        if ((newStep.save && !newStep.editable) || newStep.locked) {
-          console.warn("Index: " + i + " is locked or is not marked as editable");
-          return;
-        }
-        // Close all open panes
-        for (let step of this._steps) {
-          if (step == newStep)
-            continue;
-
-          step.active = false;
-        }
-        // Set new step as active
-        this.activeStepIndex = i;
-        newStep.active = true;
-      }
-
-      /**
-       * This function is used to reinitialize all the parameter of this element 
-       * and from all the steppers.
-       */
-      reset() {
-        this._setIsResetting(true);
-        this._setFinish(false);
-        this.activeStep = undefined;
-        this.nextStep = undefined;
-        for (var i = 0; i < this._steps.length; i++) {
-          var step = this._steps[i];
-          step.reset(this.opened);
-        }
-        this._setIsResetting(false);
+      _registerStep(element) {
+        this._steps.push(element);
+        element.stepIndex = this._steps.length - 1;
+        if (element.stepIndex == 0 && this.opened)
+          element.active = true
+        element.addEventListener("last-step-closed",  this._validStepper.bind(this));
+        element.addEventListener("continue-clicked",  this.nextStep.bind(this));
+        element.addEventListener("finish-clicked",    this._finishStep.bind(this));
+        element.addEventListener("skip-clicked",      this.skipStep.bind(this));
+        element.addEventListener("back-clicked",      this.prevStep.bind(this));
+        element.addEventListener("update-clicked",    this.nextStep.bind(this));
       }
     }
 
