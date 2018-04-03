@@ -278,7 +278,7 @@
         element.stepIndex = this._steps.length - 1;
         if (element.stepIndex == 0 && this.opened)
           element.active = true
-        element.addEventListener("last-step-closed",  this._validStepper.bind(this));
+        element.addEventListener("last-step-closed",  this.nextStep.bind(this));
         element.addEventListener("continue-clicked",  this.nextStep.bind(this));
         element.addEventListener("finish-clicked",    this._finishStep.bind(this));
         element.addEventListener("skip-clicked",      this.skipStep.bind(this));
