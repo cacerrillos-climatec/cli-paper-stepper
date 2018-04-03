@@ -3,7 +3,6 @@
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="l2t-paper-step-action-buttons.html">
 
 <dom-module id="l2t-paper-step">
   <template>
@@ -97,8 +96,21 @@
     <div class="layout">
       <iron-collapse opened="{{active}}">
         <slot></slot>
-        <l2t-paper-step-action-buttons id="stepButtons" continue-label="[[continueLabel]]" finish-label="[[finishLabel]]" update-label="[[updateLabel]]"
-          skip-label="[[skipLabel]]" skip-button="[[skipButton]]" back-label="[[backLabel]]" back-button="[[backButton]]"></l2t-paper-step-action-buttons>
+        <template is="dom-if" if="{{save}}">
+          <paper-button data-event="update" on-tap="_fireEvent">{{updateLabel}}</paper-button>
+        </template>
+        <template is="dom-if" if="{{_showContinue(active)}}">
+          <paper-button data-event="continue" on-tap="_fireEvent">{{continueLabel}}</paper-button>
+        </template>
+        <template is="dom-if" if="{{skipButton}}">
+          <paper-button data-event="skip" on-tap="_fireEvent">{{skipLabel}}</paper-button>
+        </template>
+        <template is="dom-if" if="{{_showFinish(active)}}">
+          <paper-button data-event="finish" on-tap="_fireEvent">{{finishLabel}}</paper-button>
+        </template>
+        <template is="dom-if" if="{{backButton}}">
+          <paper-button data-event="back" on-tap="_fireEvent">{{backLabel}}</paper-button>
+        </template>
       </iron-collapse>
     </div>
   </template>
@@ -302,6 +314,13 @@
         return i + 1;
       }
       /**
+       * This is a callback function called when one of the different button is clicked.
+       * @param {Object} e The event object
+       */
+      _fireEvent(e) {
+        this.dispatchEvent(new CustomEvent(`${e.currentTarget.dataset.event}-clicked`, { bubbles: true, composed: true }));
+      }
+      /**
        * returns the correct icon name
        */
       _getIcon() {
@@ -313,8 +332,6 @@
       _setActive() {
         this.parentElement.closeAll();
         this.active = true;
-        this.$.stepButtons.setUpdate(this.save && this.editable);
-        this.$.stepButtons.setFinish(this.parentElement.isFinalStep());
       }
       /**
       * checks if can be set to active, if passes sets to active
@@ -328,6 +345,13 @@
           return;
 
         this._setActive();
+      }
+      _showContinue() {
+        if (this.parentElement.isFinalStep() || this.save)
+          return false;
+      }
+      _showFinish() {
+        return this.parentElement.isFinalStep();
       }
     }
 
