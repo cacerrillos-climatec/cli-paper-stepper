@@ -97,10 +97,6 @@
       l2t-paper-step-action-buttons paper-button {
         @apply --button-style;
       }
-
-      #stepContent {
-        width: 100%
-      }
     </style>
 
     <paper-button on-tap="_toggle">
@@ -113,7 +109,7 @@
       </div>
     </paper-button>
     <div class="layout">
-      <iron-collapse id="stepContent" opened="{{active}}" horizontal$="{{stepperHorizontal}}">
+      <iron-collapse id="stepContent" opened="{{active}}">
         <slot></slot>
         <l2t-paper-step-action-buttons id="stepButtons" continue-label="[[continueLabel]]" finish-label="[[finishLabel]]" update-label="[[updateLabel]]"
           skip-label="[[skipLabel]]" skip-button="[[skipButton]]" back-label="[[backLabel]]" back-button="[[backButton]]"></l2t-paper-step-action-buttons>
@@ -125,15 +121,8 @@
     /**
      * `<l2t-paper-step>` is an element that need to be surrounded by a `<l2t-paper-stepper>` element.
      * 
-     * This element correspond correspond to one step of the all stepper.
+     * This element correspond correspond to one step in the stepper.
      * It can be Editable and Optional. 
-     * These both values corresponds to property that can be set on this element.
-     * Also you can choose the name of each buttons step.
-     * If the stepper is set as Linear, the Skip button will do nothing except if the property Optional is set.
-     *         
-     * You can add whatever you want inside the `<l2t-paper-step>` element tag.
-     * 
-     * Each steps will be numbered following the order added into the stepper.
      * 
      * Example:
      * ```html
@@ -162,8 +151,6 @@
      * `--step-badge-color`| Initial color of the badge | `#9E9E9E`
      * `--step-badge-content-color`| Color of the number and the icon inside the badge | `#FFFFFF`
      * 
-     * @polymer
-     * @customElement
      * @element l2t-paper-step
      */
     class L2tPaperStep extends Polymer.Element {
@@ -190,14 +177,12 @@
 
       static get properties() {
         return {
-
           /**
            * This is the label of the step
            */
           label: {
             type: String
           },
-
           /**
            * This stores a boolean value
            * indicating if the step is locked.
@@ -206,7 +191,6 @@
             type: Boolean,
             observer: '_getIcon'
           },
-
           /**
            * This stores a boolean value
            * indicating if the step is editable.
@@ -215,12 +199,13 @@
             type: Boolean,
             observer: '_getIcon'
           },
-
+          /**
+          *
+          **/
           valid: {
             type: Boolean,
             value: true
           },
-
           /**
            * This stores a string containing
            * the correct icon to be used.
@@ -229,7 +214,6 @@
             type: String,
             value: 'check'
           },
-
           /**
            * True if the paper-stepper is set horizontal, false otherwise
            */
@@ -239,7 +223,6 @@
             readOnly: true,
             reflectToAttribute: true
           },
-
           /**
           * Property used to indicate if the step is saved.
           * True if it's saved, false otherwise.
@@ -249,7 +232,6 @@
             value: false,
             reflectToAttribute: true
           },
-
           /**
            * Property used to indicate if the step is optional.
            * True if it's optional, false otherwise.
@@ -258,7 +240,6 @@
             type: Boolean,
             value: false
           },
-
           /**
            * Property used to indicate if the step is active.
            * If the step is active that means it will be open, and it's the current step we are focused on.
@@ -270,7 +251,6 @@
             reflectToAttribute: true,
             observer: 'changeActiveStep'
           },
-
           /**
            * The continue button text value
            * 'Continue' by default
@@ -279,7 +259,6 @@
             type: String,
             value: "Continue"
           },
-
           /**
            * The finish button text value
            * 'Finish' by default
@@ -288,7 +267,6 @@
             type: String,
             value: "Finish"
           },
-
           /**
            * The update button text value
            * 'Update' by default
@@ -297,7 +275,6 @@
             type: String,
             value: "Update"
           },
-
           /**
            * The skip button text value
            * 'Skip' by default
@@ -306,7 +283,6 @@
             type: String,
             value: "Skip"
           },
-
           /**
            * True to display the skip button, false otherwise.
            * If the step is linear, the skip button will do nothing, except if the property Optional is true.
@@ -316,7 +292,6 @@
             value: false,
             reflectToAttribute: true
           },
-
           /**
            * The back button text value
            * 'Back' by default
@@ -325,7 +300,6 @@
             type: String,
             value: "Back"
           },
-
           /**
            * True to display the back button, false otherwise.
            */
@@ -333,7 +307,9 @@
             type: Boolean,
             value: false
           },
-
+          /**
+          *
+          **/
           stepIndex: Number
         };
       }
@@ -355,48 +331,21 @@
        * @private
        */
       _toggle() {
-        // if locked or saved but not editable exit
-        if (this.locked || (this.save && !this.editable))
+        // if already active, locked or saved but not editable quit
+        if (this.active || this.locked || (this.save && !this.editable))
           return;
-        // if parent is finished exit
-        if (this.parentElement.finish)
+        // if parent is linear and step is ahead of active step or parent is finished quit
+        if ((this.parentElement.linear && this.stepIndex > this.parentElement.activeStepIndex) || this.parentElement.finish)
           return;
-        // if parent is not linear quit
-        if (!this.parentElement.linear)
-          return
-        if (this.active)
-          return
-
+        
         this.parentElement.closeAll();
-        this.toggleStep();
-        if (this.save && this.editable)
-          this.$.stepButtons.setUpdate(true);
+        this.active = true;
+        this.$.stepButtons.setUpdate(this.save && this.editable);
+        this.$.stepButtons.setFinish(this.parentElement.isFinished())
       }
 
       _badgeNum(i) {
         return i + 1;
-      }
-
-      /**
-       * This function is used to toggle the step. That means, it will open the current step.
-       * When a step is open the 'active' property is true.
-       * @param {Boolean} isLast This property is used to indicate if this step is the last step of the stepper.
-       *                         If it is, we will call the function setFinish() to set the good button.
-       */
-      toggleStep() {
-
-        if (this.parentElement.isFinished())
-          this.$.stepButtons.setFinish(true);
-
-        this.$.stepContent.toggle();
-      }
-
-      /**
-       * This function is used to set the finish action button state to true.
-       * For this step the button will display the finish button. 
-       */
-      setFinishActionButtonsState() {
-        this.$.stepButtons.setFinish(true);
       }
 
       /**
@@ -406,13 +355,11 @@
        */
       _getIcon() {
         let icon = "check";
-
         if (this.locked) {
           icon = "lock-outline";
         } else if (this.editable) {
           icon = "create"
         }
-
         this._icon = icon;
       }
 
