@@ -100,8 +100,8 @@
           if (!step.save && !step.locked && !step.active)
             count++
         }
-        this.finish = !count;
-        return this.finish;
+
+        return !count;
       }
       /**
       * This function is used to open the next step.
@@ -244,7 +244,7 @@
       _finishStep(e) {
         let currStep = this._steps[this.activeStepIndex];
         if (currStep.valid) {
-          this.nextStep();
+          this.closeAll();
           this.finish = true;
           this.dispatchEvent(new CustomEvent('stepper-finished', {
             bubbles: true,
