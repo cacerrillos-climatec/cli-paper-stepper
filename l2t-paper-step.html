@@ -10,7 +10,17 @@
       .layout {
         border-left: 1px solid var(--step-connector-line-color, var(--divider-color));
         margin-left: calc((var(--step-badge-width, 30px)/2) + 9.12px);
-        padding: 10px 31.12px;
+        padding: 0 31.12px;
+      }
+
+      .layout .content {
+        padding: 10px 0;
+      }
+
+      .layout paper-button {
+        background-color: var(--step-button-color, var(--primary-color));
+        --paper-button-ink-color: var(--step-button-color, var(--button-ink-color));
+        color: var(--step-button-text-color, #fff);
       }
 
       .toggleHdr {
@@ -95,7 +105,9 @@
     </paper-button>
     <div class="layout">
       <iron-collapse opened="{{active}}">
-        <div class="content"><slot></slot></div>
+        <div class="content">
+          <slot></slot>
+        </div>
         <template is="dom-if" if="{{save}}">
           <paper-button data-event="update" on-tap="_fireEvent">{{updateLabel}}</paper-button>
         </template>
@@ -346,7 +358,7 @@
         this._setActive();
       }
       _showContinue() {
-          return !(this.parentElement.isFinalStep() || this.save);
+        return !(this.parentElement.isFinalStep() || this.save);
       }
       _showFinish() {
         return this.parentElement.isFinalStep();
