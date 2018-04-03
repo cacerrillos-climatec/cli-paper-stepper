@@ -33,7 +33,7 @@
       }
 
       :host([save]) div#labelBtn {
-        color: var(--step-saved-label-color, #424242);
+        color: var(--step-saved-label-color, var(--primary-text-color));
         font-weight: inherit
       }
 
@@ -43,14 +43,14 @@
 
       :host([active]) div#labelBtn,
       :host([save][active]) div#labelBtn {
-        color: var(--step-active-label-color, #424242);
+        color: var(--step-active-label-color, var(--primary-text-color));
         font-weight: 600
       }
 
       div#labelBtn {
         align-self: center;
         padding: 0 16px;
-        color: var(--step-label-color, #E0E0E0)
+        color: var(--step-label-color, var(--disabled-text-color))
       }
 
       :host iron-icon#iconBtn {
