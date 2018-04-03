@@ -89,7 +89,7 @@
       <iron-icon class="iconBtn" icon="[[_getIcon(editable, save, locked)]]"></iron-icon>
       <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
       <div class="labelBtn">{{label}}
-        <div hidden="[[_not(optional)]]" class="subtitle">OPTIONAL</div>
+        <div hidden="[[!optional]]" class="subtitle">OPTIONAL</div>
       </div>
     </paper-button>
     <div class="layout">
@@ -304,12 +304,6 @@
        */
       _getIcon() {
         return this.locked ? "lock-outline" : this.editable ? "create" : "check";
-      }
-      /**
-      * returns inverse boolean of parameter
-      */
-      _not(bool) {
-        return !bool
       }
       /**
        * makes self active step
