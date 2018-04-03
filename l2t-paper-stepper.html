@@ -206,10 +206,7 @@
           currStep.save = true
           this.closeAll();
           this.finish = true;
-          this.dispatchEvent(new CustomEvent('stepper-finished', {
-            bubbles: true,
-            composed: true
-          }));
+          this.dispatchEvent(new CustomEvent('stepper-finished', { bubbles: true, composed: true }));
         } else {
           currStep.fireInvalidStep();
         }
