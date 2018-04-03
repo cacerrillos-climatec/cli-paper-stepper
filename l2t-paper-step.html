@@ -93,9 +93,7 @@
       <iron-icon class="iconBtn" icon="[[_getIcon(editable, save, locked)]]"></iron-icon>
       <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
       <div class="labelBtn">{{label}}
-        <template is="dom-if" if="{{optional}}">
-          <div class="subtitle">OPTIONAL</div>
-        </template>
+        <div hidden$="[[!optional]]" class="subtitle">OPTIONAL</div>
       </div>
     </paper-button>
     <div class="layout">
