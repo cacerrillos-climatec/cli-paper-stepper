@@ -108,13 +108,13 @@
         <div class="content">
           <slot></slot>
         </div>
-        <template is="dom-if" if="{{save}}">
+        <template is="dom-if" if="{{_showUpdate(active)}}">
           <paper-button data-event="update" on-tap="_fireEvent">{{updateLabel}}</paper-button>
         </template>
         <template is="dom-if" if="{{_showContinue(active)}}">
           <paper-button data-event="continue" on-tap="_fireEvent">{{continueLabel}}</paper-button>
         </template>
-        <template is="dom-if" if="{{skipButton}}">
+        <template is="dom-if" if="{{_showSkip(active)}}">
           <paper-button data-event="skip" on-tap="_fireEvent">{{skipLabel}}</paper-button>
         </template>
         <template is="dom-if" if="{{_showFinish(active)}}">
@@ -362,6 +362,18 @@
       **/
       _showFinish() {
         return this.parentElement.isFinalStep();
+      }
+      /**
+      * returns true if skip button should be shown
+      **/
+      _showSkip() {
+        return (this.skipButton && !this.save);
+      }
+      /**
+      * returns true if update button should be shown
+      **/
+      _showUpdate() {
+        return (this.save && this.editable);
       }
     }
 

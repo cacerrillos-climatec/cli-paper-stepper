@@ -43,7 +43,7 @@
             value: true
           },
           /**
-          * Boolean: If true, after the stepper is loaded, first step be opened.
+          * Boolean: If true, start with first step open.
           */
           opened: {
             type: Boolean,
@@ -84,7 +84,6 @@
           if (!step.save && !step.locked && !step.active)
             count++
         }
-
         return !count;
       }
       /**
@@ -220,7 +219,6 @@
         el.stepIndex = this._steps.length - 1;
         if (this.opened)
           this._steps[0]._setActive();
-        el.addEventListener("last-step-closed", this.nextStep.bind(this));
         el.addEventListener("continue-clicked", this.nextStep.bind(this));
         el.addEventListener("finish-clicked", this._finishStep.bind(this));
         el.addEventListener("skip-clicked", this.skipStep.bind(this));
