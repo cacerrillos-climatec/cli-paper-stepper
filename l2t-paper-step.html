@@ -96,7 +96,7 @@
 
     <paper-button class="toggleHdr" on-tap="_setValidActive">
       <iron-icon class="iconBtn" icon="[[_getIcon(editable, save, locked)]]"></iron-icon>
-      <span class="badgeNumber">{{_badgeNum(stepIndex)}}</span>
+      <span class="badgeNumber">{{_badgeNum(_stepIndex)}}</span>
       <div class="labelBtn">{{label}}
         <template is="dom-if" if="{{optional}}">
           <div class="subtitle">OPTIONAL</div>
