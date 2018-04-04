@@ -20,7 +20,7 @@
         margin: 0;
         background-color: var(--step-button-color, var(--primary-color));
         --paper-button-ink-color: var(--step-button-color, var(--button-ink-color));
-        color: var(--step-button-text-color, #fff);
+        color: var(--step-button-text-color, var(--primary-background-color));
       }
 
       .toggleHdr {
@@ -120,7 +120,7 @@
         <template is="dom-if" if="{{_showFinish(active)}}">
           <paper-button data-event="finish" on-tap="_fireEvent">{{finishLabel}}</paper-button>
         </template>
-        <template is="dom-if" if="{{backButton}}">
+        <template is="dom-if" if="{{_showBack(active)}}">
           <paper-button data-event="back" on-tap="_fireEvent">{{backLabel}}</paper-button>
         </template>
       </iron-collapse>
@@ -129,41 +129,18 @@
 
   <script>
     /**
-     * `<l2t-paper-step>` is an element that need to be surrounded by a `<l2t-paper-stepper>` element.
+     * `<l2t-paper-step>` is designed to be encapsulated by a `<l2t-paper-stepper>` element.
      * 
-     * This element correspond correspond to one step in the stepper.
-     * It can be Editable and Optional. 
+     * This element corresponds to one step within the stepper, it can be editable and optional. 
      * 
      * Example:
      * ```html
-     * <l2t-paper-step label="Information" skip-button optional>
-     * ...
-     * </l2t-paper-step>
+     * <l2t-paper-step label="Delivery Information" editable>...</l2t-paper-step>
      * ```
-     * 
-     * ### Styling The following custom properties and mixins are available for styling: 
-     * 
-     * Custom property | Description | Default
-     * ----------------|-------------|----------
-     * `--step-connector-line-color` | Color of the line that connect the steps | `#BDBDBD` 
-     * `--step-saved-label-color` | Color of the label once it's saved | `#424242`
-     * `--step-active-label-color`| Color of the label when the step is active | `#424242`
-     * `--step-label-color`| Initial color of the label | `#E0E0E0`
-     * `--step-badge-height`| The height of the badge (without border) | `18px`
-     * `--step-badge-width`| The width of the badge (without border) | `18px`
-     * `--step-save-badge-color`| Color of the badge once the step is saved | `--primary-color`
-     * `--step-badge-color`| Initial color of the badge | `#9E9E9E`
-     * `--step-badge-content-color`| Color of the number and the icon inside the badge | `#FFFFFF`
-     * 
+     * @group l2t Paper Elements
      * @element l2t-paper-step
      */
     class L2tPaperStep extends Polymer.Element {
-      /**
-       * Fired when the step is invalid to the validation the user defined.
-       * @event step-invalid
-       * @param {Object} detail empty
-       */
-
       static get is() { return 'l2t-paper-step'; }
 
       static get properties() {
@@ -178,53 +155,47 @@
             observer: 'activeStepObserver'
           },
           /**
-           * Boolean: indicates if back button should be shown
-           */
-          backButton: {
-            type: Boolean
-          },
-          /**
-           * String: label for back button
-           */
+          * String: label for back button
+          */
           backLabel: {
             type: String,
             value: "Back"
           },
           /**
-           * String: label for continue button
-           */
+          * String: label for continue button
+          */
           continueLabel: {
             type: String,
             value: "Continue"
           },
           /**
-           * Boolean: indicating if the step is editable.
-           */
+          * Boolean: indicating if the step is editable.
+          */
           editable: {
             type: Boolean
           },
           /**
-           * String: label for finish button
-           */
+          * String: label for finish button
+          */
           finishLabel: {
             type: String,
             value: "Finish"
           },
           /**
-           * String: label for step
-           */
+          * String: label for step
+          */
           label: {
             type: String
           },
           /**
-           * Boolean: indicating if the step is locked.
-           */
+          * Boolean: indicating if the step is locked.
+          */
           locked: {
             type: Boolean
           },
           /**
-           * Boolean: indicating if the step is optional.
-           */
+          * Boolean: indicating if the step is optional.
+          */
           optional: {
             type: Boolean
           },
@@ -236,28 +207,15 @@
             reflectToAttribute: true
           },
           /**
-           * Boolean: indicates if skip button should be shown
-           */
-          skipButton: {
-            type: Boolean,
-            reflectToAttribute: true
-          },
-          /**
-           * String: label for skip button
-           */
+          * String: label for skip button
+          */
           skipLabel: {
             type: String,
             value: "Skip"
           },
           /**
-          * Number: stores own index in _steps array
-          **/
-          stepIndex: {
-            type: Number
-          },
-          /**
-           * String: label for update button
-           */
+          * String: label for update button
+          */
           updateLabel: {
             type: String,
             value: "Update"
@@ -271,30 +229,28 @@
           },
           //////////////// Private properties ////////////////
           /**
-           * String: name of icon to be used.
-           */
-          _icon: {
-            type: String,
-            value: 'check'
+          * Number: stores own index in _steps array
+          **/
+          _stepIndex: {
+            type: Number
           }
         };
       }
       ////////////////// Public functions //////////////////
       /**
-      * Observer for active to set _activeStepIndex
+      * Observer: setActiveByIndex to active
       **/
       activeStepObserver() {
-        if (this.active)
-          this.parentElement._activeStepIndex = this.stepIndex;
+        this.active ? this.parentElement._activeStepIndex = this._stepIndex : '';
       }
       /**
-      * fire step-invalid event
+      * Function: fire step-invalid event
       **/
       fireInvalidStep() {
         this.dispatchEvent(new CustomEvent('step-invalid', { bubbles: true, composed: true }));
       }
       /**
-      * Register step with parent
+      * Function: register step with parent
       */
       ready() {
         super.ready();
@@ -302,64 +258,69 @@
       }
       ///////////////// Private functions /////////////////
       /**
-      * Returns the badge number
+      * Return: badge number
       **/
       _badgeNum(i) {
         return i + 1;
       }
       /**
-       * This is a callback function called when one of the different button is clicked.
-       * @param {Object} e The event object
-       */
+      * Function: fire clicked event for button
+      */
       _fireEvent(e) {
         this.dispatchEvent(new CustomEvent(`${e.currentTarget.dataset.event}-clicked`, { bubbles: true, composed: true }));
       }
       /**
-       * returns the correct icon name
-       */
+      * Return: icon name
+      */
       _getIcon() {
         return this.locked ? "lock-outline" : this.editable ? "create" : "check";
       }
       /**
-       * makes self active step
-       */
+      * Function: makes self active step
+      */
       _setActive() {
         this.parentElement.closeAll();
         this.active = true;
       }
       /**
-      * checks if can be set to active, if passes sets to active
+      * Function: checks if can be set to active, if passes call _setActive()
       **/
       _setValidActive() {
         // if already active, locked or saved but not editable quit
         if (this.active || this.locked || (this.save && !this.editable))
           return;
         // if parent is linear and step is ahead of active step or parent is finished quit
-        if ((!this.parentElement.nonLinear && this.stepIndex > this.parentElement._activeStepIndex && !this.save) || this.parentElement.finish)
+        if ((!this.parentElement.nonLinear && this._stepIndex > this.parentElement._activeStepIndex && !this.save) || this.parentElement.finish)
           return;
 
         this._setActive();
       }
       /**
-      * returns true if continue button should be shown
+      * Return: indicates if back button should be shown
+      **/
+      _showBack() {
+        return this.parentElement.nonLinear;
+      }
+      /**
+      * Return: indicates if continue button should be shown
       **/
       _showContinue() {
         return !(this.parentElement.isFinalStep() || this.save);
       }
       /**
-      * returns true if finish button should be shown
+      * Return: indicates if finish button should be shown
       **/
       _showFinish() {
         return this.parentElement.isFinalStep();
       }
       /**
-      * returns true if skip button should be shown
+      * Return: indicates if skip button should be shown
       **/
       _showSkip() {
-        return (this.skipButton && !this.save);
+        return (this.optional && !this.save);
       }
       /**
-      * returns true if update button should be shown
+      * Return: indicates if update button should be shown
       **/
       _showUpdate() {
         return (this.save && this.editable);

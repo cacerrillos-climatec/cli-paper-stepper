@@ -9,7 +9,7 @@
      * `<l2t-paper-stepper>` is an element used to display progress through a sequence of logical and numbered steps.
      * This element needs to be used with the `l2t-paper-step` element.
      *     
-     * Example:
+     * ### Example:
      * ```html
      * <l2t-paper-stepper>
      *     <l2t-paper-step>...</l2t-paper-step>
@@ -17,8 +17,27 @@
      * </l2t-paper-stepper>
      * ```
      * 
-     * @demo demo/index.html
+     * ### Styling:
+     * The following custom properties are available for styling:
+     *
+     * Custom property | Description | Default
+     * ----------------|-------------|----------
+     * `--step-active-label-color`| Color of the label when the step is active | `--primary-text-color`
+     * `--step-badge-color`| Color of the badge when inactive | `--secondary-text-color`
+     * `--step-badge-content-color`| Color of the number and the icon inside the badge | `--primary-background-color`
+     * `--step-badge-height`| The height of the badge (without border) | `30px`
+     * `--step-badge-width`| The width of the badge (without border) | `30px`
+     * `--step-button-color`| Color of action buttons within step | `--primary-color`
+     * `--step-button-text-color`| Text color of action buttons within step | `--primary-background-color`
+     * `--step-connector-line-color` | Color of the line that connect the steps | `--divider-color`
+     * `--step-label-color`| Initial color of the label | `--disabled-text-color`
+     * `--step-locked-badge-color`| Color of the badge if the step is locked | `--disabled-text-color`
+     * `--step-save-badge-color`| Color of the badge once the step is saved | `--primary-color`
+     * `--step-saved-label-color` | Color of the label once it's saved | `--primary-text-color`
+     * 
+     * @group l2t Paper Elements
      * @element l2t-paper-stepper
+     * @demo demo/index.html
      */
     class L2tPaperStepper extends Polymer.Element {
       static get is() { return 'l2t-paper-stepper'; }
@@ -176,7 +195,7 @@
         let prevIndex = null;
         while (stepIndex != this._activeStepIndex) {
           let checkStep = this._steps[stepIndex];
-          if (checkStep.locked || checkStep.save) {
+          if (checkStep.locked || (checkStep.save && !checkStep.editable)) {
             stepIndex = stepIndex == 0 ? this._steps.length : stepIndex - 1;
           } else {
             prevIndex = stepIndex;
@@ -204,7 +223,7 @@
        */
       _registerStep(el) {
         this._steps.push(el);
-        el.stepIndex = this._steps.length - 1;
+        el._stepIndex = this._steps.length - 1;
         el.addEventListener("continue-clicked", this.nextStep.bind(this));
         el.addEventListener("finish-clicked", this._finishStep.bind(this));
         el.addEventListener("skip-clicked", this.skipStep.bind(this));

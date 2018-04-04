@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>l2t-paper-stepper demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../l2t-paper-stepper.html">
+  <link rel="import" href="../l2t-paper-step.html">
+
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles"></style>
+  </custom-style>
+</head>
+
+<body>
+  <div class="vertical-section-container centered">
+    <h3>l2t-paper-color demos</h3>
+    <demo-snippet>
+      <b>Default setup:</b>
+      <template>
+        <l2t-paper-stepper>
+          <l2t-paper-step label="Step 1"> Content for step 1</l2t-paper-step>
+          <l2t-paper-step label="Step 2" editable> Content for step 2</l2t-paper-step>
+          <l2t-paper-step label="Step 3" locked editable> Content for step 3</l2t-paper-step>
+          <l2t-paper-step label="Step 4" optional editable skip-button> Content for step 4</l2t-paper-step>
+          <l2t-paper-step label="Step 5" editable> Content for step 5</l2t-paper-step>
+          <l2t-paper-step label="Step 6"> Content for step 6</l2t-paper-step>
+        </l2t-paper-stepper>
+      </template>
+    </demo-snippet>
+
+  </div>
+</body>
+
+</html>

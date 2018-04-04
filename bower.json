@@ -1,21 +1,26 @@
 {
   "name": "l2t-paper-stepper",
+  "version": "0.1.0",
   "description": "Stepper convey progress through numbered steps.",
   "main": "l2t-paper-stepper.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "paper-button": "PolymerElements/paper-button#^2.0.0",
     "iron-collapse": "PolymerElements/iron-collapse#^2.0.0",
-    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^2.1.0",
-    "iron-icon": "PolymerElements/iron-icon#^2.0.1"
+    "iron-icons": "PolymerElements/iron-icons#^2.0.0"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
-    "iron-component-page": "PolymerElements/iron-component-page#^3.0.1",
-    "paper-input": "PolymerElements/paper-input#^2.0.5",
-    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"
