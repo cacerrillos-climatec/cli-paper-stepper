@@ -12,7 +12,7 @@
      *     
      * Example:
      * ```html
-     * <l2t-paper-stepper opened>
+     * <l2t-paper-stepper>
      *     <l2t-paper-step>...</l2t-paper-step>
      *     <l2t-paper-step>...</l2t-paper-step>
      *     <l2t-paper-step>...</l2t-paper-step>
@@ -43,9 +43,9 @@
             value: false
           },
           /**
-          * Boolean: If true, start with first step open.
+          * Boolean: If true, start with all steps closed.
           */
-          opened: {
+          closed: {
             type: Boolean,
             value: false
           },
@@ -135,7 +135,7 @@
           step.save = false;
         }
 
-        if (this.opened)
+        if (!this.closed)
           this._steps[0]._setActive();
       }
       /**
@@ -216,7 +216,7 @@
       _registerStep(el) {
         this._steps.push(el);
         el.stepIndex = this._steps.length - 1;
-        if (this.opened)
+        if (!this.closed)
           this._steps[0]._setActive();
         el.addEventListener("continue-clicked", this.nextStep.bind(this));
         el.addEventListener("finish-clicked", this._finishStep.bind(this));
