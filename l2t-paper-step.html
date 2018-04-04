@@ -335,7 +335,7 @@
         if (this.active || this.locked || (this.save && !this.editable))
           return;
         // if parent is linear and step is ahead of active step or parent is finished quit
-        if ((this.parentElement.linear && this.stepIndex > this.parentElement._activeStepIndex && !this.save) || this.parentElement.finish)
+        if ((!this.parentElement.nonLinear && this.stepIndex > this.parentElement._activeStepIndex && !this.save) || this.parentElement.finish)
           return;
 
         this._setActive();

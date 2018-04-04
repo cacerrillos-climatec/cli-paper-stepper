@@ -38,9 +38,9 @@
           /**
           * Boolean: Used to indicate if the stepper require users to complete one step in order to move on to the next.
           */
-          linear: {
+          nonLinear: {
             type: Boolean,
-            value: true
+            value: false
           },
           /**
           * Boolean: If true, start with first step open.
@@ -196,9 +196,8 @@
         return nextIndex
       }
       /**
-       * This is a private callback function used to skip the current state and open the next one.
-       * This can be done only if we are in linear mode.
-       */
+      * Fires stepper-finished event
+      **/
       _finishStep() {
         let currStep = this._steps[this._activeStepIndex];
         if (currStep.valid) {
