@@ -2,7 +2,6 @@
 
 <dom-module id="l2t-paper-stepper">
   <template>
-    <style></style>
     <slot></slot>
   </template>
   <script>
@@ -13,7 +12,6 @@
      * Example:
      * ```html
      * <l2t-paper-stepper>
-     *     <l2t-paper-step>...</l2t-paper-step>
      *     <l2t-paper-step>...</l2t-paper-step>
      *     <l2t-paper-step>...</l2t-paper-step>
      * </l2t-paper-stepper>
@@ -68,7 +66,7 @@
       }
       ////////////////// Public functions //////////////////
       /**
-      * This function is used to close all the steps.
+      * Function: used to close all the steps
       */
       closeAll() {
         for (let step of this._steps) {
@@ -76,7 +74,7 @@
         }
       }
       /**
-      *
+      * Return: used to inicate is current step is the final step
       */
       isFinalStep() {
         let count = 0;
@@ -87,9 +85,7 @@
         return !count;
       }
       /**
-      * This function is used to open the next step.
-      * It will save and close the current active step.
-      * Then it will open the next step, if there is one.
+      * Function: used to open the next step, it will save and close the current step
       */
       nextStep() {
         let currStep = this._steps[this._activeStepIndex];
@@ -109,9 +105,7 @@
         }
       }
       /**
-      * This function is used to open the previous step.
-      * It will close, but not save, the current active step.
-      * Then it will open the previous step, if there is one.
+      * Function: used to open the previous step, it will close, not save, the current step
       */
       prevStep() {
         let currStep = this._steps[this._activeStepIndex];
@@ -124,8 +118,7 @@
         this._steps[prevStep]._setActive();
       }
       /**
-       * This function is used to reinitialize all the parameter of this element 
-       * and from all the steppers.
+       * Function: used to unsave all steps
        */
       reset() {
         this.finish = false;
@@ -134,13 +127,10 @@
           step.active = false;
           step.save = false;
         }
-
-        if (!this.closed)
-          this._steps[0]._setActive();
+        this.closed || this._steps[0]._setActive();
       }
       /**
-      * This function is used to set the active step by number/index.
-      * @param {Number} i is an index.
+      * Function: used to set the active step by number/index.
       */
       setActiveByIndex(i) {
         // Catch out of range Indexes
@@ -150,7 +140,7 @@
         this._steps[i]._setActive();
       }
       /**
-      * This function is used to skip the current active step.
+      * Function: used to open the next step, it will close, not save, the current step
       */
       skipStep() {
         let nextIndex = this._calcNextStep();
@@ -162,24 +152,7 @@
       }
       ///////////////// Private functions /////////////////
       /*
-      * Calculates previous valid step
-      */
-      _calcPrevStep() {
-        let stepIndex = this._activeStepIndex == 0 ? this._steps.length : this._activeStepIndex - 1;
-        let prevIndex = null;
-        while (stepIndex != this._activeStepIndex) {
-          let checkStep = this._steps[stepIndex];
-          if (checkStep.locked || checkStep.save) {
-            stepIndex = stepIndex == 0 ? this._steps.length : stepIndex - 1;
-          } else {
-            prevIndex = stepIndex;
-            stepIndex = this._activeStepIndex;
-          }
-        }
-        return prevIndex
-      }
-      /*
-      * Calculates next valid step
+      * Return: provides the index closest valid step, going forwards through the array
       */
       _calcNextStep() {
         let stepIndex = (this._activeStepIndex + 1) % this._steps.length;
@@ -195,8 +168,25 @@
         }
         return nextIndex
       }
+      /*
+      * Return: provides the index closest valid step, going backwards through the array
+      */
+      _calcPrevStep() {
+        let stepIndex = this._activeStepIndex == 0 ? this._steps.length : this._activeStepIndex - 1;
+        let prevIndex = null;
+        while (stepIndex != this._activeStepIndex) {
+          let checkStep = this._steps[stepIndex];
+          if (checkStep.locked || checkStep.save) {
+            stepIndex = stepIndex == 0 ? this._steps.length : stepIndex - 1;
+          } else {
+            prevIndex = stepIndex;
+            stepIndex = this._activeStepIndex;
+          }
+        }
+        return prevIndex
+      }
       /**
-      * Fires stepper-finished event
+      * Function: used to fire stepper-finished
       **/
       _finishStep() {
         let currStep = this._steps[this._activeStepIndex];
@@ -210,19 +200,17 @@
         }
       }
       /**
-       * This function is used by the `l2t-paper-step` to register into the `l2t-paper-stepper`.
-       * All elements registered are added into the _steps property.
+       * Function: used by `l2t-paper-step` to add itself into the _steps array
        */
       _registerStep(el) {
         this._steps.push(el);
         el.stepIndex = this._steps.length - 1;
-        if (!this.closed)
-          this._steps[0]._setActive();
         el.addEventListener("continue-clicked", this.nextStep.bind(this));
         el.addEventListener("finish-clicked", this._finishStep.bind(this));
         el.addEventListener("skip-clicked", this.skipStep.bind(this));
         el.addEventListener("back-clicked", this.prevStep.bind(this));
         el.addEventListener("update-clicked", this.nextStep.bind(this));
+        this.closed || this._steps[0]._setActive();
       }
     }
 
