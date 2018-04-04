@@ -300,17 +300,6 @@
         super.ready();
         this.parentElement._registerStep(this);
       }
-      /**
-      * set back to initial state 
-      */
-      reset() {
-        this.save = false;
-        this.active = false;
-        this.$.stepButtons.reset();
-
-        if (this.stepIndex === 0 && this.parentElement.opened)
-          this.active = true;
-      }
       ///////////////// Private functions /////////////////
       /**
       * Returns the badge number

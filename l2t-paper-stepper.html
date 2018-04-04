@@ -55,7 +55,7 @@
           */
           _activeStepIndex: {
             type: Number,
-            value: 0
+            value: null
           },
           /**
           * Array: Contains all the steps registered.
@@ -128,15 +128,15 @@
        * and from all the steppers.
        */
       reset() {
-        this._setIsResetting(true);
         this.finish = false;
-        this.activeStep = undefined;
-        this.nextStep = undefined;
-        for (var i = 0; i < this._steps.length; i++) {
-          var step = this._steps[i];
-          step.reset(this.opened);
+        this._activeStepIndex = null;
+        for (let step of this._steps) {
+          step.active = false;
+          step.save = false;
         }
-        this._setIsResetting(false);
+
+        if (this.opened)
+          this._steps[0]._setActive();
       }
       /**
       * This function is used to set the active step by number/index.
@@ -199,7 +199,7 @@
        * This is a private callback function used to skip the current state and open the next one.
        * This can be done only if we are in linear mode.
        */
-      _finishStep(e) {
+      _finishStep() {
         let currStep = this._steps[this._activeStepIndex];
         if (currStep.valid) {
           currStep.save = true
