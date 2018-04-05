@@ -17,6 +17,24 @@
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles"></style>
   </custom-style>
+  
+  <custom-style>
+    <style is="custom-style">
+      :host {
+        --step-active-label-color: #212121;
+        --step-badge-color: #B2DFDB;
+        --step-badge-content-color: #FFFFFF;
+        --step-button-color: #FF4081;
+        --step-button-text-color: #FFFFFF;
+        --step-connector-line-color #BDBDBD;
+        --step-label-color: #B2DFDB;
+        --step-locked-badge-color: #B2DFDB;
+        --step-save-badge-color #009688;
+        --step-saved-label-color #212121;
+      }
+    </style>
+  </custom-style>
+  
 </head>
 
 <body>
@@ -35,6 +53,26 @@
         </l2t-paper-stepper>
       </template>
     </demo-snippet>
+    
+    <demo-snippet><b>Styling:</b>
+      <template>
+        <custom-style>
+          <style is="custom-style">
+            :host {
+              --step-active-label-color: #212121;
+              --step-badge-color: #B2DFDB;
+              --step-badge-content-color: #FFFFFF;
+              --step-button-color: #FF4081;
+              --step-button-text-color: #FFFFFF;
+              --step-connector-line-color #BDBDBD;
+              --step-label-color: #B2DFDB;
+              --step-locked-badge-color: #B2DFDB;
+              --step-save-badge-color #009688;
+              --step-saved-label-color #212121;
+            }
+          </style>
+        </custom-style>
+      </demo-snippet>
 
   </div>
 </body>
