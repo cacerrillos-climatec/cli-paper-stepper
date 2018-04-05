@@ -48,28 +48,20 @@
           /**
           * Boolean: Used to indicate if the stepper is finished or not.
           */
-          finish: {
-            type: Boolean
-          },
+          finish: Boolean,
           /**
           * Boolean: Used to indicate if the stepper require users to complete one step in order to move on to the next.
           */
-          nonLinear: {
-            type: Boolean
-          },
+          nonLinear: Boolean,
           /**
           * Boolean: If true, start with all steps closed.
           */
-          closed: {
-            type: Boolean
-          },
+          closed: Boolean,
           //////////////// Private properties ////////////////
           /**
           * Number: Contains the index of the active step
           */
-          _activeStepIndex: {
-            type: Number
-          },
+          _activeStepIndex: Number,
           /**
           * Array: Contains all the steps registered.
           */
@@ -106,8 +98,7 @@
           currStep.fireInvalidStep();
         } else {
           currStep.save = true;
-          let nextIndex = this._calcNextStep();
-          nextIndex === null || this._steps[nextIndex]._setActive();
+          this.skipStep();
         }
       }
       /**

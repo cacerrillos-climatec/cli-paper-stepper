@@ -171,9 +171,7 @@
           /**
           * Boolean: indicating if the step is editable.
           */
-          editable: {
-            type: Boolean
-          },
+          editable: Boolean,
           /**
           * String: label for finish button
           */
@@ -184,21 +182,15 @@
           /**
           * String: label for step
           */
-          label: {
-            type: String
-          },
+          label: String,
           /**
           * Boolean: indicating if the step is locked.
           */
-          locked: {
-            type: Boolean
-          },
+          locked: Boolean,
           /**
           * Boolean: indicating if the step is optional.
           */
-          optional: {
-            type: Boolean
-          },
+          optional: Boolean,
           /**
           * Boolean: indicating if the step is saved.
           */
@@ -223,16 +215,12 @@
           /**
           * Boolean: indicating if the step is invalid.
           **/
-          invalid: {
-            type: Boolean
-          },
+          invalid: Boolean,
           //////////////// Private properties ////////////////
           /**
           * Number: stores own index in _steps array
           **/
-          _stepIndex: {
-            type: Number
-          }
+          _stepIndex: Number
         };
       }
       ////////////////// Public functions //////////////////
