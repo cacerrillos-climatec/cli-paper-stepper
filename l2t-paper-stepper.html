@@ -109,6 +109,13 @@
         prevStep === null || this._steps[prevStep]._setActive();
       }
       /**
+       * Function: empty steps array
+       */
+      ready() {
+        super.ready();
+        this._steps = [];
+      }
+      /**
        * Function: used to unsave all steps
        */
       reset() {
