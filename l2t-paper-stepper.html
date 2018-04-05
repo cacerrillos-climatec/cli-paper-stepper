@@ -49,30 +49,26 @@
           * Boolean: Used to indicate if the stepper is finished or not.
           */
           finish: {
-            type: Boolean,
-            value: false
+            type: Boolean
           },
           /**
           * Boolean: Used to indicate if the stepper require users to complete one step in order to move on to the next.
           */
           nonLinear: {
-            type: Boolean,
-            value: false
+            type: Boolean
           },
           /**
           * Boolean: If true, start with all steps closed.
           */
           closed: {
-            type: Boolean,
-            value: false
+            type: Boolean
           },
           //////////////// Private properties ////////////////
           /**
           * Number: Contains the index of the active step
           */
           _activeStepIndex: {
-            type: Number,
-            value: null
+            type: Number
           },
           /**
           * Array: Contains all the steps registered.
@@ -88,9 +84,8 @@
       * Function: used to close all the steps
       */
       closeAll() {
-        for (let step of this._steps) {
+        for (let step of this._steps)
           step.active = false;
-        }
       }
       /**
       * Return: used to inicate is current step is the final step
@@ -108,19 +103,12 @@
       */
       nextStep() {
         let currStep = this._steps[this._activeStepIndex];
-        // Check valid is true
-        if (currStep.valid) {
-          // Save current step
-          currStep.save = true;
-          // Calculate next step
-          let nextIndex = this._calcNextStep();
-          // if there are 0 valid steps quit
-          if (nextIndex === null)
-            return
-
-          this._steps[nextIndex]._setActive();
-        } else {
+        if (currStep.invalid) {
           currStep.fireInvalidStep();
+        } else {
+          currStep.save = true;
+          let nextIndex = this._calcNextStep();
+          nextIndex === null || this._steps[nextIndex]._setActive();
         }
       }
       /**
@@ -128,13 +116,8 @@
       */
       prevStep() {
         let currStep = this._steps[this._activeStepIndex];
-        // Calculate next step
         let prevStep = this._calcPrevStep();
-        // if there are 0 valid steps quit
-        if (prevStep === null)
-          return
-
-        this._steps[prevStep]._setActive();
+        prevStep === null || this._steps[prevStep]._setActive();
       }
       /**
        * Function: used to unsave all steps
@@ -152,22 +135,14 @@
       * Function: used to set the active step by number/index.
       */
       setActiveByIndex(i) {
-        // Catch out of range Indexes
-        if (i >= this._steps.length || i < 0)
-          return;
-
-        this._steps[i]._setActive();
+        i >= this._steps.length || i < 0 || this._steps[i]._setActive();
       }
       /**
       * Function: used to open the next step, it will close, not save, the current step
       */
       skipStep() {
         let nextIndex = this._calcNextStep();
-        // if there are 0 valid steps quit
-        if (nextIndex === null)
-          return
-
-        this._steps[nextIndex]._setActive();
+        nextIndex === null || this._steps[nextIndex]._setActive();
       }
       ///////////////// Private functions /////////////////
       /*
@@ -209,13 +184,13 @@
       **/
       _finishStep() {
         let currStep = this._steps[this._activeStepIndex];
-        if (currStep.valid) {
+        if (currStep.invalid) {
+          currStep.fireInvalidStep();
+        } else {
           currStep.save = true
           this.closeAll();
           this.finish = true;
           this.dispatchEvent(new CustomEvent('stepper-finished', { bubbles: true, composed: true }));
-        } else {
-          currStep.fireInvalidStep();
         }
       }
       /**
