@@ -93,8 +93,7 @@
       isFinalStep() {
         let count = 0;
         for (let step of this._steps) {
-          if (!step.save && !step.locked && !step.active)
-            count++
+          !step.save && !step.locked && !step.active && !step.optional && count++
         }
         return !count;
       }
