@@ -53,48 +53,95 @@ The following custom properties are available for styling:
 | --step-save-badge-color| Color of the badge once the step is saved | --primary-color |
 | --step-saved-label-color | Color of the label once it's saved | --primary-text-color |
 
-## Attributes
+## Attributes (l2t-paper-stepper)
 
 ### Public
 
 | Attribute Name | Functionality | Type | Default |
 |----------------|-------------|-------------|-------------|
-| totalSlides | Number for storing total number of slides | Number | NULL |
-| autoProgress | Boolean value to state if slides should auto proceed | Boolean | false |
-| slideDuration | Number of seconds each slide should remain for | Number | 5 |
-| hideNav | Boolean value to state if nav should should hidden | Boolean | false |
-| position | Number for storing start position of slides | Number | 0 |
-| disableSwipe | Boolean value to state if swipe shoud work | Boolean | false |
-| sensitivity | String to storing high, low or default swipe sensitivity | String | 'default' |
+| closed | If true, start with all steps closed | Boolean | false |
+| finish | Used to indicate if the stepper require users to complete one step in order to move on to the next. | Boolean | false |
+| nonLinear | Used to indicate if the stepper is finished or not | Boolean | false |
 
 ### Private
 
 | Attribute Name | Functionality | Type | Default |
 |----------------|-------------|-------------|-------------|
-| _totalDots | Array for storing number leading up to totalSlides | Array | [] |
-| _dotStyles | Object for storing all the styles of the dot elements | Object | NULL |
+| _activeStepIndex | Contains the index of the active step. | Number | NULL |
+| _steps | Contains all the steps registered. | Array | [] |
 
-## Methods
+## Attributes (l2t-paper-step)
+
+### Public
+
+| Attribute Name | Functionality | Type | Default |
+|----------------|-------------|-------------|-------------|
+| active | indicating if the step is currently active | Boolean | false |
+| backLabel | label for back button | String | 'Back' |
+| continueLabel | label for continue button | String | 'Continue' |
+| editable | indicating if the step is editable | Boolean | false |
+| finishLabel | label for finish button | String | 'Finish' |
+| label | label for step | String | '' |
+| locked | indicating if the step is locked | Boolean | false |
+| optional | indicating if the step is optional | Boolean | false |
+| save | indicating if the step is saved | Boolean | false |
+| skipLabel | label for skip button | String | 'Skip' |
+| updateLabel | label for update button | String | 'Update' |
+| invalid | indicating if the step is invalid | Boolean | false |
+
+### Private
+
+| Attribute Name | Functionality | Type | Default |
+|----------------|-------------|-------------|-------------|
+| _stepIndex | stores own index in _steps array. | Number | NULL |
+
+## Methods (l2t-paper-stepper)
 
 ### Public
 
 | Method Name | Action |
 |----------------|-------------|
-| moveNext() | Method for moving to the next slide or back to the first slide |
-| movePrev() | Method for moving to the previous slide or to the last slide |
-| movePos(slide) | Method for moving to a specific slide |
+| closeAll() | Function: used to close all the steps |
+| isFinalStep() | Return: used to inicate is current step is the final step |
+| nextStep() | Function: used to open the next step, it will save and close the current step |
+| prevStep() | Function: used to open the previous step, it will close, not save, the current step |
+| reset() | Function: used to unsave all steps |
+| setActiveByIndex(i) | Function: used to set the active step by number/index |
+| skipStep() | Function: used to open the next step, it will close, not save, the current step |
 
 ### Private
 
 | Method Name | Action |
 |----------------|-------------|
-| _autoProceed() | Method for moving automatically ever slideDuration seconds |
-| _countSlides() | Count the slides, and set totalSlides |
-| _createDots(t) | Create the nav dots 1 for each slide |
-| _animateCSS() | Method for styling and animating dots |
-| _listenerInit() | Adds onclick listener To update the position |
-| _reInit() | Method to reinitialise on totalSlides change |
-| _swipeHandler(e) | Method for adding swipe event handler |
+| _calcNextStep() | Return: provides the index closest valid step, going forwards through the array |
+| _calcPrevStep() | Return: provides the index closest valid step, going backwards through the array |
+| _finishStep() | Function: used to fire stepper-finished |
+| _registerStep(el) | Function: used by `l2t-paper-step` to add itself into the _steps array |
+
+## Methods (l2t-paper-step)
+
+### Public
+
+| Method Name | Action |
+|----------------|-------------|
+| activeStepObserver() | Observer: setActiveByIndex to active |
+| fireInvalidStep() | Function: fire step-invalid event |
+| ready() | Function: register step with parent |
+
+### Private
+
+| Method Name | Action |
+|----------------|-------------|
+| _badgeNum(i) | Return: badge number |
+| _fireEvent(e) | Function: fire clicked event for button |
+| _getIcon() | Return: icon name |
+| _setActive() | Function: makes self active step |
+| _setValidActive() | Function: checks if can be set to active, if passes call _setActive() |
+| _showBack()  | Return: indicates if back button should be shown |
+| _showContinue() | Return: indicates if continue button should be shown |
+| _showFinish() | Return: indicates if finish button should be shown |
+| _showSkip() | Return: indicates if skip button should be shown |
+| _showUpdate() | Return: indicates if update button should be shown |
 
 ## Credit
 

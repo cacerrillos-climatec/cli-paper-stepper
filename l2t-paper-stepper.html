@@ -46,6 +46,10 @@
         return {
           ///////////////// Public properties /////////////////
           /**
+          * Boolean: If true, start with all steps closed.
+          */
+          closed: Boolean,
+          /**
           * Boolean: Used to indicate if the stepper is finished or not.
           */
           finish: Boolean,
@@ -53,10 +57,6 @@
           * Boolean: Used to indicate if the stepper require users to complete one step in order to move on to the next.
           */
           nonLinear: Boolean,
-          /**
-          * Boolean: If true, start with all steps closed.
-          */
-          closed: Boolean,
           //////////////// Private properties ////////////////
           /**
           * Number: Contains the index of the active step
