@@ -60,15 +60,15 @@ The following custom properties are available for styling:
 | Attribute Name | Functionality | Type | Default |
 |----------------|-------------|-------------|-------------|
 | closed | If true, start with all steps closed | Boolean | false |
-| finish | Used to indicate if the stepper require users to complete one step in order to move on to the next. | Boolean | false |
-| nonLinear | Used to indicate if the stepper is finished or not | Boolean | false |
+| finish | Used to indicate if the stepper is finished or not | Boolean | false |
+| nonLinear | Used to indicate if the stepper require users to complete one step in order to move on to the next | Boolean | false |
 
 ### Private
 
 | Attribute Name | Functionality | Type | Default |
 |----------------|-------------|-------------|-------------|
-| _activeStepIndex | Contains the index of the active step. | Number | NULL |
-| _steps | Contains all the steps registered. | Array | [] |
+| _activeStepIndex | Contains the index of the active step | Number | NULL |
+| _steps | Contains all the steps registered | Array | [] |
 
 ## Attributes (l2t-paper-step)
 
@@ -93,7 +93,7 @@ The following custom properties are available for styling:
 
 | Attribute Name | Functionality | Type | Default |
 |----------------|-------------|-------------|-------------|
-| _stepIndex | stores own index in _steps array. | Number | NULL |
+| _stepIndex | stores own index in _steps array | Number | NULL |
 
 ## Methods (l2t-paper-stepper)
 
