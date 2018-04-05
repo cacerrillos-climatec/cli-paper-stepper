@@ -114,7 +114,6 @@
       * Function: used to open the previous step, it will close, not save, the current step
       */
       prevStep() {
-        let currStep = this._steps[this._activeStepIndex];
         let prevStep = this._calcPrevStep();
         prevStep === null || this._steps[prevStep]._setActive();
       }
