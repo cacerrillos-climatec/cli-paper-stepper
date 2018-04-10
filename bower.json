@@ -1,6 +1,6 @@
 {
   "name": "l2t-paper-stepper",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Polymer element for displaying steps in a stepper progression form",
   "main": "l2t-paper-stepper.html",
   "license": "MIT",
