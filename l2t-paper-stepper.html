@@ -57,6 +57,10 @@
           * Boolean: Used to indicate if the stepper require users to complete one step in order to move on to the next.
           */
           nonLinear: Boolean,
+          viewOnly: {
+            type: Boolean
+          },
+          expanded: Boolean,
           //////////////// Private properties ////////////////
           /**
           * Number: Contains the index of the active step
@@ -198,6 +202,10 @@
         el.addEventListener("back-clicked", this.prevStep.bind(this));
         el.addEventListener("update-clicked", this.nextStep.bind(this));
         this.closed || this._steps[0]._setActive();
+
+        if(this.expanded) {
+          el._setActive();
+        }
       }
     }
 

@@ -266,7 +266,8 @@
       * Function: makes self active step
       */
       _setActive() {
-        this.parentElement.closeAll();
+        if(!this.parentElement.expanded)
+          this.parentElement.closeAll();
         this.active = true;
       }
       /**
@@ -286,31 +287,31 @@
       * Return: indicates if back button should be shown
       **/
       _showBack() {
-        return this.parentElement.nonLinear;
+        return this.parentElement.nonLinear && !this.parentElement.viewOnly;
       }
       /**
       * Return: indicates if continue button should be shown
       **/
       _showContinue() {
-        return !(this.parentElement.isFinalStep() || this.save);
+        return !(this.parentElement.isFinalStep() || this.save) && !this.parentElement.viewOnly;
       }
       /**
       * Return: indicates if finish button should be shown
       **/
       _showFinish() {
-        return this.parentElement.isFinalStep();
+        return this.parentElement.isFinalStep() && !this.parentElement.viewOnly;
       }
       /**
       * Return: indicates if skip button should be shown
       **/
       _showSkip() {
-        return (this.optional && !this.save);
+        return (this.optional && !this.save) && !this.parentElement.viewOnly;
       }
       /**
       * Return: indicates if update button should be shown
       **/
       _showUpdate() {
-        return (this.save && this.editable);
+        return (this.save && this.editable) && !this.parentElement.viewOnly;
       }
     }
 
